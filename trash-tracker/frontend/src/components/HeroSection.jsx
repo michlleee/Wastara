@@ -14,7 +14,7 @@ const HeroSection = () => {
       <RegisterDropdown />
       <p className="mt-2 text-sm text-gray-400">
         Already have an account?{" "}
-        <Link to="/login" className="underline hover:text-green-300">Sign in</Link>
+        <Link to="/login" className="underline hover:text-green-300">Login</Link>
       </p>
     </main>
   );

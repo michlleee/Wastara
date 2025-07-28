@@ -9,7 +9,7 @@ const RegisterDropdown = () => {
   const handleSelect = (role) => {
     setOpen(false);
     if (role === "user") {
-      navigate("/user-register");
+      navigate("/signup");
     } else if (role === "organizer") {
       navigate("/organizer-register");
     }
