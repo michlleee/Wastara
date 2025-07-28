@@ -1,9 +1,16 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import LandingPage from './pages/LandingPage.jsx';
+
 function App() {
   return (
     <>
-      <div className="h-screen bg-blue-600 flex items-center justify-center">
-        <h1 className="text-white font-bold text-4xl">Tailwind is working</h1>
-      </div>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<div>Login Page</div>} />
+          <Route path="/register" element={<div>Register Page</div>} />
+        </Routes>
+      </BrowserRouter>
     </>
   )
 }
