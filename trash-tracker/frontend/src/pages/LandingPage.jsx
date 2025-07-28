@@ -10,7 +10,7 @@ const LandingPage = () => {
 
         <div className="my-6">
           <Link
-            to="/register"
+            to="/signup"
             className="inline-block border-4 border-blue-500 text-blue-700 font-bold text-lg px-8 py-3 rounded-lg hover:bg-blue-50 transition"
           >
             Start now

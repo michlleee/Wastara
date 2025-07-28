@@ -9,7 +9,7 @@ function RegisterPage(){
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const result = await axios.get("/api/users/signup", form);
+            const result = await axios.post("/api/users/signup", form);
             setMessage(result.data.message);
         } catch (error) {
             setMessage(error.response?.data?.message || "Error occured");
@@ -58,13 +58,15 @@ function RegisterPage(){
                         />
                     </div>
 
+
                     <button
                         type="submit"
                         className="w-full bg-blue-500 text-white font-semibold py-2 rounded-md hover:bg-blue-600 transition"
-                    >
+                        >
                         Sign Up
                     </button>
                     </form>
+                    <p>{message}</p>
                 </div>
             </div>
         </>
