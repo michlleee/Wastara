@@ -94,7 +94,7 @@ Other Tools
 | Trash reporting with location    | Yes      |
 | Organizer dashboard              | Yes      |
 | Admin interface (basic)          | Yes      |
-| Map clustering / Heatmaps        | No       |
+| Map clustering / Heatmaps        | Yes       |
 | WhatsApp/Notification integration| No       |
 | Settings page                    | Optional |
 
@@ -148,7 +148,6 @@ Create a .env file inside the /server directory with the following content:
 
 ## Future Improvements
 
-- Map clustering for high-density trash reports
 - Offline reporting capabilities via service workers
 - SMS or WhatsApp notifications for organizers
 - Admin analytics dashboard with charts
