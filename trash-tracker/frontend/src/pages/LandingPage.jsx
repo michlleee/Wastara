@@ -58,7 +58,7 @@ const LandingPage = () => {
                 Login
               </Link>
               <Link
-                to="/signup"
+                to="/signup/user"
                 className="px-5 py-2 text-base font-bold leading-7 border border-transparent rounded-xl font-pj transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2"
                 style={{
                   color: '#176B37',

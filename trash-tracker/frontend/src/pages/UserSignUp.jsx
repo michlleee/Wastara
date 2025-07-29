@@ -9,7 +9,7 @@ function RegisterPage(){
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const result = await axios.post("/api/users/signup", form);
+            const result = await axios.post("/api/signup/users", form);
             setMessage(result.data.message);
         } catch (error) {
             setMessage(error.response?.data?.message || "Error occured");
@@ -19,12 +19,13 @@ function RegisterPage(){
         <>
             <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
                 <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
-                    <h1 className="text-2xl font-semibold text-center text-gray-800 mb-6">Sign Up</h1>
+                    <h1 className="text-2xl font-semibold text-center text-gray-800 mb-6">Sign Up as User</h1>
                     
                     <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="name">Name</label>
                         <input
+                        required
                         type="text"
                         name="name"
                         id="name"
@@ -37,6 +38,7 @@ function RegisterPage(){
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="email">Email</label>
                         <input
+                        required
                         type="text"
                         name="email"
                         id="email"
@@ -49,6 +51,7 @@ function RegisterPage(){
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="password">Password</label>
                         <input
+                        required
                         type="password"
                         name="password"
                         id="password"
@@ -66,7 +69,7 @@ function RegisterPage(){
                         Sign Up
                     </button>
                     </form>
-                    <p>{message}</p>
+                    <p className="mt-4 text-center text-sm text-gray-600">{message}</p>
                 </div>
             </div>
         </>
