@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-function RegisterPage(){
+function SignUpPage(){
     const [form, setForm] = useState({name: "", email: "", password: "", role: "user"});
     const [message, setMessage] = useState('');
 
@@ -73,4 +73,4 @@ function RegisterPage(){
     );
 }
 
-export default RegisterPage;
+export default SignUpPage;

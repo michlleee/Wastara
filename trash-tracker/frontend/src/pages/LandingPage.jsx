@@ -1,9 +1,10 @@
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import bgSampah from '../assets/bg_sampah2.jpg';
 import landingBg from '../assets/bg_landing_page.png';
-import logo from '../assets/WASTARA_black.svg';
 import Footer from "../components/Footer"
 import HeroSection from "../components/HeroSection";
+import Navbar from "../components/Navbar";
+
 const LandingPage = () => {
   return (
     <>
@@ -21,63 +22,7 @@ const LandingPage = () => {
         {/* Content */}
         <div className="relative z-20 flex flex-col min-h-screen">
           {/* Navbar */}
-          <header className="flex justify-between items-center px-6 py-4 text-white">
-            <img src={logo} alt="Wastara Logo" className="h-10 w-auto" />
-            
-            <nav className="space-x-6 hidden sm:flex">
-              <a href="#about" className="hover:text-green-300">About Us</a>
-              <a href="#vision" className="hover:text-green-300">Vision & Mission</a>
-              <a href="#features" className="hover:text-green-300">Features</a>
-              <a href="#how" className="hover:text-green-300">How to Use</a>
-            </nav>
-            <div className="space-x-2">
-              <Link
-                to="/login"
-                className="px-5 py-2 text-base font-semibold leading-7 transition-all duration-200 bg-transparent rounded-xl font-pj focus:outline-none focus:ring-2 focus:ring-offset-2"
-                style={{
-                  color: '#E6E2C3',
-                  border: '1px solid #E6E2C3',
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.backgroundColor = '#E6E2C3';
-                  e.currentTarget.style.color = '#176B37'; // Optional: match brand
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                  e.currentTarget.style.color = '#E6E2C3';
-                }}
-                onFocus={(e) => {
-                  e.currentTarget.style.backgroundColor = '#E6E2C3';
-                  e.currentTarget.style.color = '#176B37';
-                }}
-                onBlur={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                  e.currentTarget.style.color = '#E6E2C3';
-                }}
-              >
-                Login
-              </Link>
-              <Link
-                to="/signup"
-                className="px-5 py-2 text-base font-bold leading-7 border border-transparent rounded-xl font-pj transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2"
-                style={{
-                  color: '#176B37',
-                  backgroundColor: '#E6E2C3',
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.backgroundColor = '#176B37';
-                  e.currentTarget.style.color = '#E6E2C3'
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.backgroundColor = '#E6E2C3';
-                  e.currentTarget.style.color = '#176B37'
-                }}
-              >
-                Sign Up
-              </Link>
-
-            </div>
-          </header>
+          <Navbar />
 
           {/* Hero */}
           <HeroSection />
