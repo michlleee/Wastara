@@ -42,7 +42,7 @@ const Navbar = () => {
         </Link>
 
         <Link
-          to="/signup"
+          to="/signup/user"
           className="mr-8 sm:px-4 sm:py-2 text-base font-bold leading-7 border border-transparent rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2"
           style={{
             color: '#176B37',
