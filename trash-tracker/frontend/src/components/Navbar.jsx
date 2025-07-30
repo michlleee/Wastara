@@ -18,24 +18,24 @@ const Navbar = () => {
           to="/login"
           className="mx-4 px-4 py-2 text-base font-semibold leading-7 transition-all duration-200 bg-transparent rounded-xl font-pj focus:outline-none focus:ring-2 focus:ring-offset-2"
           style={{
-            color: '#E6E2C3',
-            border: '1px solid #E6E2C3',
+            color: '#ffffffff',
+            border: '1px solid #ffffffff',
           }}
           onMouseOver={(e) => {
-            e.currentTarget.style.backgroundColor = '#E6E2C3';
-            e.currentTarget.style.color = '#176B37';
+            e.currentTarget.style.backgroundColor = '#ffffffff';
+            e.currentTarget.style.color = '#6D9D58';
           }}
           onMouseOut={(e) => {
             e.currentTarget.style.backgroundColor = 'transparent';
-            e.currentTarget.style.color = '#E6E2C3';
+            e.currentTarget.style.color = '#ffffffff';
           }}
           onFocus={(e) => {
-            e.currentTarget.style.backgroundColor = '#E6E2C3';
-            e.currentTarget.style.color = '#176B37';
+            e.currentTarget.style.backgroundColor = '#ffffffff';
+            e.currentTarget.style.color = '#6D9D58';
           }}
           onBlur={(e) => {
             e.currentTarget.style.backgroundColor = 'transparent';
-            e.currentTarget.style.color = '#E6E2C3';
+            e.currentTarget.style.color = '#ffffffff';
           }}
         >
           Login
@@ -45,16 +45,16 @@ const Navbar = () => {
           to="/signup/user"
           className="mr-8 sm:px-4 sm:py-2 text-base font-bold leading-7 border border-transparent rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2"
           style={{
-            color: '#176B37',
-            backgroundColor: '#E6E2C3',
+            color: '#6D9D58',
+            backgroundColor: '#ffffffff',
           }}
           onMouseOver={(e) => {
-            e.currentTarget.style.backgroundColor = '#176B37';
-            e.currentTarget.style.color = '#E6E2C3';
+            e.currentTarget.style.backgroundColor = '#6D9D58';
+            e.currentTarget.style.color = '#ffffffff';
           }}
           onMouseOut={(e) => {
-            e.currentTarget.style.backgroundColor = '#E6E2C3';
-            e.currentTarget.style.color = '#176B37';
+            e.currentTarget.style.backgroundColor = '#ffffffff';
+            e.currentTarget.style.color = '#6D9D58';
           }}
         >
           Sign Up

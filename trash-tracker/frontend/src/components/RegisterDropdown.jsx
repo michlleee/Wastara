@@ -33,13 +33,13 @@ const RegisterDropdown = () => {
         onClick={() => setOpen((prev) => !prev)}
         className="w-full sm:w-auto px-14 sm:px-28 py-3 sm:py-4 text-white border border-white rounded-xl font-bold text-base sm:text-lg transition duration-200"
         style={{
-          backgroundColor: "#5E864C",
+          backgroundColor: "#6D9D58",
         }}
         onMouseOver={(e) => {
           e.currentTarget.style.backgroundColor = "#4d6f3e";
         }}
         onMouseOut={(e) => {
-          e.currentTarget.style.backgroundColor = "#5E864C";
+          e.currentTarget.style.backgroundColor = "#6D9D58";
         }}
       >
         SIGN UP NOW

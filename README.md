@@ -1,7 +1,7 @@
 # AIC-CicakBelajar
 ---
 
-# TrashTrack — Community-Powered Trash Reporting PWA
+# Wastara — Community-Powered Trash Reporting PWA
 
 A progressive web app (PWA) that allows citizens to report trash pileups and enables cleanup personnel to locate and address them. Designed to improve environmental responsiveness through community participation.
 
@@ -9,7 +9,7 @@ A progressive web app (PWA) that allows citizens to report trash pileups and ena
 
 ## Overview
 
-TrashTrack is a lightweight and mobile-first web app built for ease of reporting and coordination. It connects:
+Wastara is a lightweight and mobile-first web app built for ease of reporting and coordination. It connects:
 
 - Citizens — who report trash in public areas
 - Organizers — designated trash pickup personnel (manual admin approval required)
