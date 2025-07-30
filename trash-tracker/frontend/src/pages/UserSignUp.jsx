@@ -21,6 +21,10 @@ function SignUpPage(){
             setMessage(error.response?.data?.message || "Error occured");
         }
     };
+
+    const handleGoogleSignup = () => {
+        window.location.href = `/auth/google?intent=user`;
+    };
     return(
         <>
             <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
@@ -75,6 +79,24 @@ function SignUpPage(){
                         Sign Up
                     </button>
                     </form>
+                    <div className="my-4 flex items-center">
+                        <div className="flex-grow h-px bg-gray-300"></div>
+                        <span className="mx-3 text-sm text-gray-500">or</span>
+                        <div className="flex-grow h-px bg-gray-300"></div>
+                    </div>
+
+                    <button
+                        onClick={handleGoogleSignup}
+                        className="w-full flex items-center justify-center bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-md transition"
+                    >
+                        <img
+                        src="https://www.svgrepo.com/show/475656/google-color.svg"
+                        alt="Google"
+                        className="w-5 h-5 mr-2"
+                        />
+                        Sign Up with Google
+                    </button>
+
                     <p className="mt-4 text-center text-sm text-gray-600">{message}</p>
                 </div>
             </div>
