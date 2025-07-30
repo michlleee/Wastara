@@ -5,7 +5,13 @@ function SignUpPage(){
     const [form, setForm] = useState({name: "", email: "", password: "", role: "user"});
     const [message, setMessage] = useState('');
 
-    const handleChange = (e) => {setForm({...form, [e.target.name]: e.target.value})};
+    function handleChange(event){
+        const {value, name} = event.target;
+        setForm({
+            ...form,
+            [name]: value,
+        });
+    }
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
