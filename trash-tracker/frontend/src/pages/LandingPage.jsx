@@ -1,25 +1,25 @@
 import landingBg from '../assets/bg_landing_page.png';
+import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import HeroSection from "../components/HeroSection";
-import Navbar from "../components/Navbar";
 import AboutUsCard from '../components/AboutUsCard';
+import BackgroundSection from '../components/BackgroundSection';
+import VisionMission from '../components/VisionMission';
 
 const LandingPage = () => {
   return (
     <>
-    {/* First Content */}
       <div
         className="relative min-h-screen bg-cover bg-center"
         style={{ backgroundImage: `url(${landingBg})` }}
         >
         <div className="relative z-20 flex flex-col min-h-screen">
           <Navbar />
-          {/* Hero Section with Image Background */}
+          {/* Hero section */}
           <HeroSection />
           
-          {/* Sloped transition section */}
+          {/* Right to left slope */}
           <div className="relative w-full h-20 z-10">
-            {/* Green background */}
             <div
               className="absolute top-0 left-0 w-full h-full"
               style={{
@@ -28,7 +28,6 @@ const LandingPage = () => {
               }}
             ></div>
             
-            {/* White overlay - matches green's bottom slope */}
             <div
               className="absolute top-0 left-0 w-full h-full bg-white"
               style={{
@@ -39,10 +38,36 @@ const LandingPage = () => {
         </div>
       </div>
 
-      {/* About Section */}
+      {/* About section */}
       <div className="relative z-20 bg-white">
         <AboutUsCard />
       </div>
+
+      {/* Background (Problems) section */}
+      <div className="relative z-20 bg-white">
+        <BackgroundSection />
+      </div>
+
+      {/* Left to right slope */}
+      <div className="relative w-full h-20">
+        <div
+          className="absolute top-0 left-0 w-full h-full z-10"
+          style={{
+            backgroundColor: '#6D9D58',
+           clipPath: "polygon(0% 0%, 100% 60%, 100% 100%, 0% 40%)"
+          }}
+        ></div>
+
+        <div
+          className="absolute top-0 left-0 w-full h-full z-10"
+          style={{
+            backgroundColor: '#141414',
+           clipPath: "polygon(0% 0%, 0% 100%, 100% 100%, 0% 40%)"
+          }}
+        ></div>
+      </div>
+
+      <VisionMission />
 
       <Footer />
     </>
