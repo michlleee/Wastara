@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import image from "../assets/bg_landing_page.png"
 
 function SignUpPage(){
     const [form, setForm] = useState({name: "", email: "", password: "", role: "user"});
@@ -25,79 +26,99 @@ function SignUpPage(){
     const handleGoogleSignup = () => {
         window.location.href = `/auth/google?intent=user`;
     };
-    return(
+    return (
         <>
-            <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-                <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
-                    <h1 className="text-2xl font-semibold text-center text-gray-800 mb-6">Sign Up as User</h1>
-                    
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="name">Name</label>
-                        <input
-                        required
-                        type="text"
-                        name="name"
-                        id="name"
-                        placeholder="Your name"
-                        onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        />
+            <div className="min-h-screen flex flex-col sm:flex-row">
+                {/* Left Side*/}
+                <div className="sm:w-1/2 w-full h-64 sm:h-auto relative flex items-center justify-center bg-black text-white">
+                    {/* You can replace the img with an animation, SVG, or Beams if needed */}
+                    <img
+                        src={image}
+                        alt="Visual"
+                        className="object-cover w-full h-full absolute inset-0"
+                    />
+                    <div className="z-10 text-center p-6 sm:p-12">
+                        <h2 className="text-3xl font-bold">Create your free account</h2>
+                        <p className="mt-2">Explore features and join the community.</p>
                     </div>
+                    <div className="absolute inset-0 bg-black opacity-50"></div>
+                </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="email">Email</label>
-                        <input
-                        required
-                        type="text"
-                        name="email"
-                        id="email"
-                        placeholder="Your email"
-                        onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        />
-                    </div>
+                {/* Right Side (Form) */}
+                <div className="sm:w-1/2 w-full flex items-center justify-center p-6 sm:p-12 bg-white">
+                    <div className="w-full max-w-md">
+                        <h1 className="text-2xl font-semibold text-gray-800 mb-6 text-center sm:text-left">
+                            Sign Up as User
+                        </h1>
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="password">Password</label>
-                        <input
-                        required
-                        type="password"
-                        name="password"
-                        id="password"
-                        placeholder="Password"
-                        onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        />
-                    </div>
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="name">Name</label>
+                                <input
+                                    required
+                                    type="text"
+                                    name="name"
+                                    id="name"
+                                    placeholder="Your name"
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                />
+                            </div>
 
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="email">Email</label>
+                                <input
+                                    required
+                                    type="email"
+                                    name="email"
+                                    id="email"
+                                    placeholder="Your email"
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                />
+                            </div>
 
-                    <button
-                        type="submit"
-                        className="w-full bg-blue-500 text-white font-semibold py-2 rounded-md hover:bg-blue-600 transition"
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="password">Password</label>
+                                <input
+                                    required
+                                    type="password"
+                                    name="password"
+                                    id="password"
+                                    placeholder="Password"
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                />
+                            </div>
+
+                            <button
+                                type="submit"
+                                className="w-full bg-blue-500 text-white font-semibold py-2 rounded-md hover:bg-blue-600 transition"
+                            >
+                                Sign Up
+                            </button>
+                        </form>
+
+                        <div className="my-4 flex items-center">
+                            <div className="flex-grow h-px bg-gray-300"></div>
+                            <span className="mx-3 text-sm text-gray-500">or</span>
+                            <div className="flex-grow h-px bg-gray-300"></div>
+                        </div>
+
+                        <button
+                            onClick={handleGoogleSignup}
+                            className="w-full flex items-center justify-center bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-md transition"
                         >
-                        Sign Up
-                    </button>
-                    </form>
-                    <div className="my-4 flex items-center">
-                        <div className="flex-grow h-px bg-gray-300"></div>
-                        <span className="mx-3 text-sm text-gray-500">or</span>
-                        <div className="flex-grow h-px bg-gray-300"></div>
+                            <img
+                                src="https://www.svgrepo.com/show/475656/google-color.svg"
+                                alt="Google"
+                                className="w-5 h-5 mr-2"
+                            />
+                            Sign Up with Google
+                        </button>
+
+                        <p className="mt-4 text-center text-sm text-gray-600">{message}</p>
                     </div>
-
-                    <button
-                        onClick={handleGoogleSignup}
-                        className="w-full flex items-center justify-center bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-md transition"
-                    >
-                        <img
-                        src="https://www.svgrepo.com/show/475656/google-color.svg"
-                        alt="Google"
-                        className="w-5 h-5 mr-2"
-                        />
-                        Sign Up with Google
-                    </button>
-
-                    <p className="mt-4 text-center text-sm text-gray-600">{message}</p>
                 </div>
             </div>
         </>

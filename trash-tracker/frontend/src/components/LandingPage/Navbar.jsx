@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import logo from "../assets/WASTARA_black.svg";
+import logo from "../../assets/WASTARA_black.svg";
 import { Menu, X } from "lucide-react"; // You can use any icon lib
 
 const Navbar = () => {

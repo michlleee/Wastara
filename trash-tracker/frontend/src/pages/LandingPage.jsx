@@ -1,10 +1,10 @@
 import landingBg from '../assets/bg_landing_page.png';
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import HeroSection from "../components/HeroSection";
-import AboutUsCard from '../components/AboutUsCard';
-import BackgroundSection from '../components/BackgroundSection';
-import VisionMission from '../components/VisionMission';
+import Navbar from "../components/LandingPage/Navbar";
+import Footer from "../components/LandingPage/Footer";
+import HeroSection from "../components/LandingPage/HeroSection";
+import AboutUsCard from '../components/LandingPage/AboutUsCard';
+import BackgroundSection from '../components/LandingPage/BackgroundSection';
+import VisionMission from '../components/LandingPage/VisionMission';
 
 const LandingPage = () => {
   return (

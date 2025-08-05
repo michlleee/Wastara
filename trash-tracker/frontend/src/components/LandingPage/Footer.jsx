@@ -1,4 +1,4 @@
-import logo from '../assets/WASTARA_black.svg';
+import logo from "../../assets/WASTARA_black.svg";
 
 export default () => {
   const footerNavs = [

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import RegisterDropdown from "./RegisterDropdown";
-import logo from "../assets/WASTARA_black.svg";
+import logo from "../../assets/WASTARA_black.svg";
 
 const HeroSection = () => {
   return (
