@@ -1,8 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function FinishOrganizerSignUp() {
+  const navigate = useNavigate();
   const { mongoId } = useParams();
   console.log(mongoId);
 
@@ -42,8 +44,17 @@ function FinishOrganizerSignUp() {
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
+          withCredentials: true,
         }
       );
+
+      const data = res.data;
+
+      if (data.message === "Success") {
+        setTimeout(() => {
+          navigate(`/dashboard/organizer/${data.user.id}`);
+        }, 0);
+      }
 
       setMessage(res.data.message);
     } catch (err) {

@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import userRouter from "./routes/users.js";
 import MongoStore from "connect-mongo";
 import "./config/passport.js";
+import User from "./models/User.js";
 
 dotenv.config();
 
@@ -60,32 +61,52 @@ app.get("/auth/google", (req, res, next) => {
 app.get(
   "/auth/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "/login",
+    failureRedirect: `${FRONTEND_URL}/login`,
     session: true,
   }),
-  (req, res) => {
-    const intent = req.query.state;
-    console.log("Intent from state:", intent);
+  async (req, res) => {
+    try {
+      const intent = req.query.state;
+      const mongoId = req.user._id.toString();
+      const user = req.user;
 
-    const mongoId = req.user._id.toString();
-    const role = req.user.role;
+      console.log("Intent from state:", intent);
+      console.log("User:", user);
 
-    // First-time signup, no role yet
-    if (!role) {
-      if (intent === "organizer") {
-        return res.redirect(
-          `${FRONTEND_URL}/signup/organizer/finish/${mongoId}`
-        );
+      // No role means first time signup
+      if (!user.role) {
+        if (intent === "organizer") {
+          return res.redirect(
+            `${FRONTEND_URL}/signup/organizer/finish/${mongoId}`
+          );
+        } else if (intent === "user") {
+          await User.findByIdAndUpdate(mongoId, {
+            role: "user",
+            reportCount: 0,
+          });
+          const updatedUser = await User.findById(mongoId);
+          return req.login(updatedUser, (err) => {
+            if (err) {
+              console.error("Login error after setting user role:", err);
+              return res.redirect(`${FRONTEND_URL}/login`);
+            }
+            return res.redirect(`${FRONTEND_URL}/dashboard/${mongoId}`);
+          });
+        } else {
+          console.warn("No intent provided on first-time login.");
+          return res.redirect(`${FRONTEND_URL}/`);
+        }
+      }
+
+      // If user already has a role (logins)
+      if (user.role === "organizer") {
+        return res.redirect(`${FRONTEND_URL}/dashboard/organizer/${mongoId}`);
       } else {
         return res.redirect(`${FRONTEND_URL}/dashboard/${mongoId}`);
       }
-    }
-
-    // Already has a role — redirect based on role
-    if (role === "organizer") {
-      return res.redirect(`${FRONTEND_URL}/dashboard/organizer/${mongoId}`);
-    } else {
-      return res.redirect(`${FRONTEND_URL}/dashboard/${mongoId}`);
+    } catch (error) {
+      console.error("Google login error:", error);
+      return res.redirect(`${FRONTEND_URL}/login`);
     }
   }
 );
@@ -97,13 +118,6 @@ app.get("/api/me", (req, res) => {
     res.status(401).json({ message: "Not authenticated" });
   }
 });
-
-app.get("/login", (req, res) => {
-  res.send(
-    'Login failed or not logged in. <a href="/auth/google">Try Google Login</a>'
-  );
-});
-
 //=================
 
 // Start the server AFTER middlewares & routes are set

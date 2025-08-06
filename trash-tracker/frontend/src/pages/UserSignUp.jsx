@@ -1,13 +1,14 @@
 import { useState } from "react";
 import axios from "axios";
 import image from "../assets/bg_landing_page.png";
+import { useNavigate } from "react-router-dom";
 
 function SignUpPage() {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     name: "",
     email: "",
     password: "",
-    role: "user",
   });
   const [message, setMessage] = useState("");
 
@@ -22,7 +23,13 @@ function SignUpPage() {
     e.preventDefault();
     try {
       const result = await axios.post("/api/signup/users", form);
-      setMessage(result.data.message);
+      const data = result.data;
+      console.log(data.message);
+      if (data.message === "Success") {
+        setTimeout(() => {
+          navigate(`/dashboard/${data.user.id}`);
+        }, 0);
+      }
     } catch (error) {
       setMessage(error.response?.data?.message || "Error occured");
     }

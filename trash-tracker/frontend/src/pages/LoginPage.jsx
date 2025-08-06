@@ -23,7 +23,8 @@ function LoginPage() {
     try {
       const response = await axios.post(
         "http://localhost:3000/api/signup/login",
-        form
+        form,
+        { withCredentials: true }
       );
       const { user } = response.data;
 

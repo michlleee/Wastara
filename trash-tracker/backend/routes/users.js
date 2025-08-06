@@ -22,8 +22,9 @@ router.post("/users", async (req, res) => {
       name,
       email,
       password: hashedPassword,
+      reportCount: 0,
       authType: "local",
-      role,
+      role: "user",
     });
     await newUser.save();
 
@@ -32,9 +33,10 @@ router.post("/users", async (req, res) => {
         console.error("Login error after signup:", err);
         return res.status(500).json({ message: "Login after signup failed" });
       }
-
+      console.log("user successfully signup");
+      console.log(newUser);
       res.status(200).json({
-        message: "User created and logged in",
+        message: "Success",
         user: {
           id: newUser._id,
           name: newUser.name,
@@ -44,8 +46,6 @@ router.post("/users", async (req, res) => {
         },
       });
     });
-    console.log(newUser);
-    res.status(200).json({ message: "User created" });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
@@ -53,7 +53,7 @@ router.post("/users", async (req, res) => {
 
 //handle organizer signup
 router.post("/organizer", upload.single("ktpImage"), async (req, res) => {
-  const { name, email, password, role, phone, organizationName } = req.body;
+  const { name, email, password, phone, organizationName } = req.body;
   try {
     const existingEmail = await User.findOne({ email });
     if (existingEmail) {
@@ -67,7 +67,7 @@ router.post("/organizer", upload.single("ktpImage"), async (req, res) => {
       email,
       password: hashedPassword,
       authType: "local",
-      role,
+      role: "organizer",
       nationalId: req.file?.path,
       isApproved: false,
       pickupCount: 0,
@@ -75,14 +75,17 @@ router.post("/organizer", upload.single("ktpImage"), async (req, res) => {
       organizationName: organizationName,
     });
     await newUser.save();
+
     req.login(newUser, (err) => {
       if (err) {
         console.error("Login error after organizer signup:", err);
         return res.status(500).json({ message: "Login after signup failed" });
       }
 
-      res.status(200).json({
-        message: "Organizer created and logged in",
+      console.log("organizer successfully signup");
+      console.log(newUser);
+      return res.status(200).json({
+        message: "Success",
         user: {
           id: newUser._id,
           name: newUser.name,
@@ -92,11 +95,9 @@ router.post("/organizer", upload.single("ktpImage"), async (req, res) => {
         },
       });
     });
-    console.log(newUser);
-    res.status(200).json({ message: "Organizer created" });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server error" });
   }
 });
 
@@ -112,7 +113,27 @@ router.patch("/organizer/:id", upload.single("ktpImage"), async (req, res) => {
       phone: req.body.whatsappNumber,
     };
     await User.findByIdAndUpdate(req.params.id, updates);
-    res.status(200).json({ message: "Profile completed" });
+
+    const updatedOrg = await User.findById(req.params.id);
+
+    if (!updatedOrg) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    req.login(updatedOrg, (err) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).json({ message: "Login after update failed" });
+      }
+      res.status(200).json({
+        message: "Success",
+        user: {
+          id: updatedOrg._id,
+          name: updatedOrg.name,
+          email: updatedOrg.email,
+        },
+      });
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Update failed" });
@@ -130,13 +151,9 @@ router.post("/login", async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
-
-    // Check if account was created using Google OAuth
     if (user.authType === "google") {
       return res.status(400).json({ message: "Please login using Google" });
     }
-
-    // Compare password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid credentials" });

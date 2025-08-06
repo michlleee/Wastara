@@ -1,13 +1,14 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function RegisterPage() {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     name: "",
     email: "",
     password: "",
     nationalId: "",
-    role: "organizer",
     ktpImage: null,
     phone: "",
     organizationName: "",
@@ -33,7 +34,6 @@ function RegisterPage() {
       formData.append("name", form.name);
       formData.append("email", form.email);
       formData.append("password", form.password);
-      formData.append("role", form.role);
       formData.append("nationalId", form.nationalId);
       formData.append("phone", form.phone);
       formData.append("organizationName", form.organizationName);
@@ -45,10 +45,19 @@ function RegisterPage() {
         headers: {
           "Content-Type": "multipart/form-data",
         },
+        withCredentials: true,
       });
 
-      setMessage(result.data.message);
+      const data = result.data;
+      console.log(data.message);
+
+      if (data.message === "Success") {
+        setTimeout(() => {
+          navigate(`/dashboard/organizer/${data.user.id}`);
+        }, 0);
+      }
     } catch (error) {
+      console.log("AXIOS ERROR", error.response);
       setMessage(error.response?.data?.message || "Error occurred");
     }
   };
