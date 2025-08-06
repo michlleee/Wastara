@@ -20,7 +20,7 @@ const VisionMission = () => {
                   className="w-15 h-15 transition transform duration-300 hover:-translate-y-1"
                 />
               </div>
-              <p className="text-center text-base text-gray-700 leading-relaxed tracking-wide text-justify">
+              <p className="text-base text-gray-700 leading-relaxed tracking-wide text-justify">
                 Our vision is to build cleaner and more responsive urban
                 environments by enabling real-time, community-driven waste
                 reporting. This encourages public participation and improves
@@ -37,7 +37,7 @@ const VisionMission = () => {
                   className="w-15 h-15 transition transform duration-300 hover:-translate-y-1"
                 />
               </div>
-              <p className="text-center text-base text-gray-700 leading-relaxed tracking-wide text-justify">
+              <p className="text-base text-gray-700 leading-relaxed tracking-wide text-justify">
                 We aim to empower citizens to take part in maintaining public
                 cleanliness by streamlining communication between communities
                 and waste management teams. Leveraging technology, we offer a

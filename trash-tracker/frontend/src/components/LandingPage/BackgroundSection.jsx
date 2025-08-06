@@ -15,7 +15,7 @@ const problemData = [
 
 const BackgroundSection = () => {
   return (
-    <div className="bg-white py-20 px-4">
+    <div className="bg-white h-150 py-20 px-4">
       <h2 className="text-4xl font-bold text-[#6D9D58] text-center mb-10 sm:mb-20">
         Problems
       </h2>

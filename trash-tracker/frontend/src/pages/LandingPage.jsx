@@ -4,8 +4,8 @@ import Footer from "../components/LandingPage/Footer";
 import HeroSection from "../components/LandingPage/HeroSection";
 import AboutUsCard from "../components/LandingPage/AboutUsCard";
 import BackgroundSection from "../components/LandingPage/BackgroundSection";
-import VisionMission from "../components/LandingPage/VisionMission";
-import OurFeatures from "../components/LandingPage/OurFeatures";
+import HowTo from "../components/LandingPage/HowTo";
+import BlackBackground from "../components/LandingPage/BlackBackground";
 
 const LandingPage = () => {
   return (
@@ -55,17 +55,32 @@ const LandingPage = () => {
         ></div>
 
         <div
-          className="absolute top-0 left-0 w-full h-full z-10"
+          className="absolute top-0 left-0 w-full h-full z-10 bg-[#141414]"
           style={{
-            backgroundColor: "#141414",
             clipPath: "polygon(0% 0%, 0% 100%, 100% 100%, 0% 40%)",
           }}
         ></div>
       </div>
 
-      <VisionMission />
-      <OurFeatures />
+      <BlackBackground />
 
+      <div className="relative w-full h-24 overflow-hidden z-10">
+        <div
+          className="absolute top-0 left-0 w-full h-full"
+          style={{
+            backgroundColor: "#6D9D58",
+            clipPath: "polygon(0% 0%, 100% 0%, 100% 30%, 0% 100%)",
+          }}
+        ></div>
+        <div
+          className="absolute top-0 left-0 w-full h-full bg-[#141414]"
+          style={{
+            clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 70%)",
+          }}
+        ></div>
+      </div>
+
+      <HowTo />
       <Footer />
     </>
   );
