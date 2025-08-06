@@ -27,7 +27,9 @@ export default () => {
         <div className="max-w-md">
           <img src={logo} alt="Wastara Logo" className="h-8 w-auto mb-4" />
           <p className="text-sm leading-relaxed">
-            Easily report full or neglected trash bins with GPS and photos. Help organizers respond quicker and keep your city clean — one report at a time.
+            Easily report full or neglected trash bins with GPS and photos. Help
+            organizers respond quicker and keep your city clean — one report at
+            a time.
           </p>
         </div>
 
