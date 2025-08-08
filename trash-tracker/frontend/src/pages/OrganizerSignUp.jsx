@@ -1,8 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
+import image from "../assets/bg_sampah4.jpg";
 import { useNavigate } from "react-router-dom";
 
-function RegisterPage() {
+function OrganizerSignUp() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
     name: "",
@@ -68,151 +69,182 @@ function RegisterPage() {
 
   return (
     <>
-      <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-        <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
-          <h1 className="text-2xl font-semibold text-center text-gray-800 mb-6">
-            Sign Up as Organizer
-          </h1>
+      <div className="min-h-screen flex flex-col sm:flex-row">
+        <div className="sm:w-1/2 w-full h-64 sm:h-auto relative flex items-center justify-center bg-black text-white">
+          <img
+            src={image}
+            alt="Visual"
+            className="object-cover w-full h-full absolute inset-0"
+          />
+          <div className="z-10 text-center p-6 sm:p-12">
+            <h2 className="text-3xl font-bold">Create your organizer account</h2>
+            <p className="mt-2">Be the force behind cleaner, greener communities.</p>
+          </div>
+          <div className="absolute inset-0 bg-black opacity-70"></div>
+        </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label
-                className="block text-sm font-medium text-gray-700 mb-1"
-                htmlFor="name"
-              >
-                Name
-              </label>
-              <input
-                required
-                type="text"
-                name="name"
-                id="name"
-                placeholder="Your name"
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
-            </div>
+        <div className="sm:w-1/2 w-full flex items-center justify-center p-6 sm:p-12 bg-white">
+          <div className="w-full max-w-md">
+            <h1 className="text-2xl font-semibold text-gray-800 mb-6 text-center sm:text-left">
+              Sign Up as Organizer
+            </h1>
 
-            <div>
-              <label
-                className="block text-sm font-medium text-gray-700 mb-1"
-                htmlFor="email"
-              >
-                Email
-              </label>
-              <input
-                required
-                type="email"
-                name="email"
-                id="email"
-                placeholder="Your email"
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
-            </div>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                  htmlFor="name"
+                >
+                  Name
+                </label>
+                <input
+                  required
+                  type="text"
+                  name="name"
+                  id="name"
+                  placeholder="Your name"
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
 
-            <div>
-              <label
-                className="block text-sm font-medium text-gray-700 mb-1"
-                htmlFor="password"
-              >
-                Password
-              </label>
-              <input
-                required
-                type="password"
-                name="password"
-                id="password"
-                placeholder="Password"
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
-            </div>
+              <div>
+                <label
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                  htmlFor="email"
+                >
+                  Email
+                </label>
+                <input
+                  required
+                  type="email"
+                  name="email"
+                  id="email"
+                  placeholder="Your email"
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
 
-            <div>
-              <label className="block font-medium mb-1">
-                Organization Name
-              </label>
-              <input
-                name="organizationName"
-                value={form.organizationName}
-                onChange={handleChange}
-                className="w-full border px-3 py-2 rounded"
-                required
-              />
-            </div>
+              <div>
+                <label
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                  htmlFor="password"
+                >
+                  Password
+                </label>
+                <input
+                  required
+                  type="password"
+                  name="password"
+                  id="password"
+                  placeholder="Password"
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
 
-            <div>
-              <label className="block font-medium mb-1">WhatsApp Number</label>
-              <input
-                name="phone"
-                value={form.phone}
-                onChange={handleChange}
-                className="w-full border px-3 py-2 rounded"
-                required
-              />
-            </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Organization Name
+                </label>
+                <input
+                  name="organizationName"
+                  value={form.organizationName}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  required
+                />
+              </div>
 
-            <div>
-              <label
-                htmlFor="ktpImage"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Upload KTP Image
-              </label>
-              <input
-                type="file"
-                name="ktpImage"
-                id="ktpImage"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="w-full"
-                required
-              />
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  WhatsApp Number
+                </label>
+                <input
+                  name="phone"
+                  value={form.phone}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  required
+                />
+              </div>
 
-              {previewUrl && (
-                <div className="mt-4">
-                  <p className="text-sm text-gray-600 mb-1">Preview:</p>
-                  <img
-                    src={previewUrl}
-                    alt="KTP Preview"
-                    className="max-w-xs rounded shadow"
-                  />
+              <div>
+                <label
+                  htmlFor="ktpImage"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Upload KTP Image
+                </label>
+
+                <div className="flex items-center space-x-3">
+                  <label
+                    htmlFor="ktpImage"
+                    className="inline-block cursor-pointer bg-white border border-gray-300 rounded-md px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition"
+                  >
+                    Choose Image
+                  </label>
+
+                  <span className="text-sm text-gray-600">
+                    {form.ktpImage?.name || "No file chosen"}
+                  </span>
                 </div>
-              )}
+
+                <input
+                  type="file"
+                  name="ktpImage"
+                  id="ktpImage"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  required
+                />
+
+                {previewUrl && (
+                  <div className="mt-4 border border-gray-300 rounded-md p-3">
+                    <p className="text-sm text-gray-600 mb-1">Preview:</p>
+                    <img
+                      src={previewUrl}
+                      alt="KTP Preview"
+                      className="rounded shadow max-w-[300px] max-h-[200px] object-contain"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-pink-500 text-white font-semibold py-2 rounded-md hover:bg-pink-600 transition"
+              >
+                Sign Up
+              </button>
+            </form>
+
+            <div className="my-4 flex items-center">
+              <div className="flex-grow h-px bg-gray-300"></div>
+              <span className="mx-3 text-sm text-gray-500">or</span>
+              <div className="flex-grow h-px bg-gray-300"></div>
             </div>
 
             <button
-              type="submit"
-              className="w-full bg-pink-500 text-white font-semibold py-2 rounded-md hover:bg-pink-600 transition"
+              onClick={handleGoogleSignup}
+              className="w-full flex items-center justify-center bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-md transition"
             >
-              Sign Up
+              <img
+                src="https://www.svgrepo.com/show/475656/google-color.svg"
+                alt="Google"
+                className="w-5 h-5 mr-2"
+              />
+              Sign Up with Google
             </button>
-          </form>
 
-          <div className="my-4 flex items-center">
-            <div className="flex-grow h-px bg-gray-300"></div>
-            <span className="mx-3 text-sm text-gray-500">or</span>
-            <div className="flex-grow h-px bg-gray-300"></div>
+            <p className="mt-4 text-center text-sm text-gray-600">{message}</p>
           </div>
-
-          <button
-            onClick={handleGoogleSignup}
-            className="w-full flex items-center justify-center bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-md transition"
-          >
-            <img
-              src="https://www.svgrepo.com/show/475656/google-color.svg"
-              alt="Google"
-              className="w-5 h-5 mr-2"
-            />
-            Sign Up with Google
-          </button>
-
-          <p className="mt-4 text-center text-sm text-gray-600">{message}</p>
         </div>
       </div>
     </>
   );
 }
 
-export default RegisterPage;
+export default OrganizerSignUp;
