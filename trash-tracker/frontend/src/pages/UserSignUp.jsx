@@ -1,9 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
-import image from "../assets/bg_landing_page.png";
+import image from "../assets/bg_sampah3.jpg";
 import { useNavigate } from "react-router-dom";
 
-function SignUpPage() {
+function UserSignUp() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
     name: "",
@@ -41,9 +41,7 @@ function SignUpPage() {
   return (
     <>
       <div className="min-h-screen flex flex-col sm:flex-row">
-        {/* Left Side*/}
         <div className="sm:w-1/2 w-full h-64 sm:h-auto relative flex items-center justify-center bg-black text-white">
-          {/* You can replace the img with an animation, SVG, or Beams if needed */}
           <img
             src={image}
             alt="Visual"
@@ -51,12 +49,11 @@ function SignUpPage() {
           />
           <div className="z-10 text-center p-6 sm:p-12">
             <h2 className="text-3xl font-bold">Create your free account</h2>
-            <p className="mt-2">Explore features and join the community.</p>
+            <p className="mt-2">Clean communities start with your report.</p>
           </div>
-          <div className="absolute inset-0 bg-black opacity-50"></div>
+          <div className="absolute inset-0 bg-black opacity-75"></div>
         </div>
 
-        {/* Right Side (Form) */}
         <div className="sm:w-1/2 w-full flex items-center justify-center p-6 sm:p-12 bg-white">
           <div className="w-full max-w-md">
             <h1 className="text-2xl font-semibold text-gray-800 mb-6 text-center sm:text-left">
@@ -152,4 +149,4 @@ function SignUpPage() {
   );
 }
 
-export default SignUpPage;
+export default UserSignUp;
