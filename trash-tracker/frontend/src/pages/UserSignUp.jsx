@@ -54,7 +54,7 @@ function UserSignUp() {
           <div className="absolute inset-0 bg-black opacity-75"></div>
         </div>
 
-        <div className="sm:w-1/2 w-full flex items-center justify-center p-6 sm:p-12 bg-white">
+        <div className="sm:w-1/2 w-full flex items-center justify-center p-6 sm:p-12 bg-gradient-to-t from-blue-200 via-white to-white">
           <div className="w-full max-w-md">
             <h1 className="text-2xl font-semibold text-gray-800 mb-6 text-center sm:text-left">
               Sign Up as User
@@ -121,6 +121,16 @@ function UserSignUp() {
               >
                 Sign Up
               </button>
+              <p className="mt-3 text-start text-sm text-gray-600">
+                Already have an account?{" "}
+                <button
+                  type="button"
+                  onClick={() => navigate("/login")}
+                  className="text-blue-500 hover:underline font-medium"
+                >
+                  Log in
+                </button>
+              </p>
             </form>
 
             <div className="my-4 flex items-center">

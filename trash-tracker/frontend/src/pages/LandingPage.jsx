@@ -3,7 +3,7 @@ import Navbar from "../components/LandingPage/Navbar";
 import Footer from "../components/LandingPage/Footer";
 import HeroSection from "../components/LandingPage/HeroSection";
 import AboutUsCard from "../components/LandingPage/AboutUsCard";
-import BackgroundSection from "../components/LandingPage/BackgroundSection";
+import ProblemSection from "../components/LandingPage/ProblemSection";
 import HowTo from "../components/LandingPage/HowTo";
 import BlackBackground from "../components/LandingPage/BlackBackground";
 
@@ -42,7 +42,7 @@ const LandingPage = () => {
       </div>
 
       <div className="relative z-20 bg-white">
-        <BackgroundSection />
+        <ProblemSection />
       </div>
 
       <div className="relative w-full h-20">

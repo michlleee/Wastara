@@ -83,7 +83,12 @@ function OrganizerSignUp() {
           <div className="absolute inset-0 bg-black opacity-70"></div>
         </div>
 
-        <div className="sm:w-1/2 w-full flex items-center justify-center p-6 sm:p-12 bg-white">
+        <div
+            className="sm:w-1/2 w-full flex items-center justify-center p-6 sm:p-12"
+            style={{
+              background: 'linear-gradient(to top, #99c994ff, white 50%, white)'
+            }}
+          >
           <div className="w-full max-w-md">
             <h1 className="text-2xl font-semibold text-gray-800 mb-6 text-center sm:text-left">
               Sign Up as Organizer
@@ -181,7 +186,7 @@ function OrganizerSignUp() {
                 <div className="flex items-center space-x-3">
                   <label
                     htmlFor="ktpImage"
-                    className="inline-block cursor-pointer bg-white border border-gray-300 rounded-md px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition"
+                    className="inline-block cursor-pointer border border-gray-300 rounded-md px-4 py-2 text-sm text-gray-700 hover:bg-green-300 transition"
                   >
                     Choose Image
                   </label>
@@ -215,10 +220,21 @@ function OrganizerSignUp() {
 
               <button
                 type="submit"
-                className="w-full bg-pink-500 text-white font-semibold py-2 rounded-md hover:bg-pink-600 transition"
+                className="w-full bg-green-600 text-white font-semibold py-2 rounded-md hover:bg-green-700 transition"
               >
                 Sign Up
               </button>
+
+              <p className="mt-3 text-start text-sm text-gray-600">
+                Already have an account?{" "}
+                <button
+                  type="button"
+                  onClick={() => navigate("/login")}
+                  className="text-green-600 hover:underline font-medium"
+                >
+                  Log in
+                </button>
+              </p>
             </form>
 
             <div className="my-4 flex items-center">
