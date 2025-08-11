@@ -3,10 +3,6 @@ import LeafletMap from "../components/LeafletMap";
 import axios from "axios";
 
 export default function LocationTracker() {
-  const [location, setLocation] = useState({
-    latitude: 0,
-    longitude: 0,
-  });
   const [button, setButton] = useState(false);
 
   const [reportData, setReportData] = useState({
@@ -27,20 +23,22 @@ export default function LocationTracker() {
   const triggerLocationRequest = () => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        const { latitude, longitude, accuracy } = position.coords;
+        const { latitude, longitude } = position.coords;
 
-        setLocation({
-          latitude,
-          longitude,
-          accuracyInMeters: accuracy,
-        });
+        setReportData((prev) => ({
+          ...prev,
+          location: {
+            latitude,
+            longitude,
+          },
+        }));
       },
       (error) => {
         console.error("Error getting location:", error);
       },
       {
         enableHighAccuracy: true,
-        timeout: 20000,
+        timeout: 10000,
         maximumAge: 0,
       }
     );
@@ -50,7 +48,10 @@ export default function LocationTracker() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (location.latitude === 0 && location.longitude === 0) {
+    if (
+      reportData.location.latitude === 0 &&
+      reportData.location.longitude === 0
+    ) {
       console.log("location is empty, submit request denied");
       return;
     }
@@ -166,8 +167,8 @@ export default function LocationTracker() {
           ) : (
             <div className="h-64">
               <LeafletMap
-                latitude={location.latitude}
-                longitude={location.longitude}
+                latitude={reportData.location.latitude}
+                longitude={reportData.location.longitude}
                 onLocationChange={(lat, lng) =>
                   setReportData((prev) => ({
                     ...prev,
@@ -186,8 +187,8 @@ export default function LocationTracker() {
           </button>
         </form>
 
-        <p>Your latitude: {location.latitude}</p>
-        <p>Your longitude: {location.longitude}</p>
+        <p>Your latitude: {reportData.location.latitude}</p>
+        <p>Your longitude: {reportData.location.longitude}</p>
       </div>
     </>
   );
