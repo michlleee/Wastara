@@ -38,7 +38,7 @@ export default function LocationTracker() {
       },
       {
         enableHighAccuracy: true,
-        timeout: 10000,
+        timeout: 1000,
         maximumAge: 0,
       }
     );
