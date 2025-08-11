@@ -88,7 +88,6 @@ const UserDashboard = () => {
           </div>
         </div>
 
-        {/* Bottom Section */}
         <div className="grid grid-cols-1 sm:grid-cols-12 gap-6">
           <div className="sm:col-span-5 rounded-lg shadow-md/30">
             <ActivePickups />

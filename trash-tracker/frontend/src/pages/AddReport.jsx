@@ -91,104 +91,105 @@ export default function LocationTracker() {
 
   return (
     <>
-      <div>
-        <form onSubmit={handleSubmit}>
-          <p>Report your trash!</p>
+      <div className="flex justify-center items-center w-full min-h-svh bg-[#F0EEDA] py-15">
+        <div className="p-6 bg-white/70 border-b-gray-950 border-2 rounded-lg shadow-md max-w-2xl mx-auto">
+          <form onSubmit={handleSubmit} className="space-y-2">
+            <h2 className="text-2xl font-bold mb-4 text-center">Add Trash Report</h2>
+            <div className="w-full h-0.5 bg-black mb-6"></div>
 
-          <p>Upload your trash photo:</p>
-          <label
-            htmlFor="ktpImage"
-            className="cursor-pointer bg-blue-500 text-white px-3 py-1 rounded"
-          >
-            Choose File
-          </label>
-          <input
-            type="file"
-            name="ktpImage"
-            id="ktpImage"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="hidden"
-            required
-          />
-
-          {previewUrl && (
-            <img
-              src={previewUrl}
-              alt="Trash preview"
-              className="mt-2 w-40 h-40 object-cover rounded"
+            <p>Upload your trash photo:</p>
+            <label
+              htmlFor="ktpImage"
+              className="cursor-pointer bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded"
+            >
+              Choose File
+            </label>
+            <input
+              type="file"
+              name="ktpImage"
+              id="ktpImage"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="hidden"
+              required
             />
-          )}
 
-          <p>Give us a description about your trash!</p>
-          <textarea
-            name="trashDescription"
-            value={reportData.trashDescription}
-            onChange={(e) =>
-              setReportData((prev) => ({
-                ...prev,
-                trashDescription: e.target.value,
-              }))
-            }
-            className="border rounded p-2 w-full"
-            placeholder="Describe your trash here..."
-            required
-          />
-
-          <p>Give us a description about your trash location</p>
-          <textarea
-            name="placeDescription"
-            value={reportData.placeDescription}
-            onChange={(e) =>
-              setReportData((prev) => ({
-                ...prev,
-                placeDescription: e.target.value,
-              }))
-            }
-            className="border rounded p-2 w-full"
-            placeholder="Describe your trash location here..."
-            required
-          />
-
-          <p>Choose the location of your trash placement:</p>
-          <button
-            type="button"
-            onClick={triggerLocationRequest}
-            className="border-amber-700 border-2 bg-amber-500 hover:bg-amber-600"
-          >
-            Turn on Location
-          </button>
-          <p>
-            pls kindly give us access to your location to know where your trash
-            is placed!
-          </p>
-          {!button ? (
-            <p>map not available. location not found.</p>
-          ) : (
-            <div className="h-64">
-              <LeafletMap
-                latitude={reportData.location.latitude}
-                longitude={reportData.location.longitude}
-                onLocationChange={(lat, lng) =>
-                  setReportData((prev) => ({
-                    ...prev,
-                    location: { latitude: lat, longitude: lng },
-                  }))
-                }
+            {previewUrl && (
+              <img
+                src={previewUrl}
+                alt="Trash preview"
+                className="my-2 w-40 h-40 object-cover rounded"
               />
-            </div>
-          )}
+            )}
 
-          <button
-            type="submit"
-            className="bg-green-500 text-white px-4 py-2 rounded mt-50"
-          >
-            Submit Report
-          </button>
-        </form>
+            <p className="mt-4">Give us a description about your trash!</p>
+            <textarea
+              name="trashDescription"
+              value={reportData.trashDescription}
+              onChange={(e) =>
+                setReportData((prev) => ({
+                  ...prev,
+                  trashDescription: e.target.value,
+                }))
+              }
+              className="border rounded p-2 w-full"
+              placeholder="Describe your trash here..."
+              required
+            />
 
-        <p>Your latitude: {reportData.location.latitude}</p>
-        <p>Your longitude: {reportData.location.longitude}</p>
+            <p>Give us a description about your trash location</p>
+            <textarea
+              name="placeDescription"
+              value={reportData.placeDescription}
+              onChange={(e) =>
+                setReportData((prev) => ({
+                  ...prev,
+                  placeDescription: e.target.value,
+                }))
+              }
+              className="border rounded p-2 w-full"
+              placeholder="Describe your trash location here..."
+              required
+            />
+
+            <p>Choose the location of your trash placement:</p>
+            <button
+              type="button"
+              onClick={triggerLocationRequest}
+              className="bg-amber-400 hover:bg-amber-500 py-1 px-4 rounded text-amber-900 mb-4"
+            >
+              Turn on Location
+            </button>
+            <p>
+              Please kindly give us access to your location to know where your trash
+              is placed!
+            </p>
+            {!button ? (
+              <p>Map not available. location not found.</p>
+            ) : (
+              <div className="h-35 sm:h-45">
+                <LeafletMap
+                  latitude={reportData.location.latitude}
+                  longitude={reportData.location.longitude}
+                  onLocationChange={(lat, lng) =>
+                    setReportData((prev) => ({
+                      ...prev,
+                      location: { latitude: lat, longitude: lng },
+                    }))
+                  }
+                />
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="bg-green-800 hover:bg-green-900 text-white px-4 py-2 rounded items-center mt-50"
+            >
+              Submit Report
+            </button>
+          </form>
+
+        </div>
       </div>
     </>
   );

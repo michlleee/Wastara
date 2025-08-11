@@ -80,7 +80,7 @@ const LandingPage = () => {
         ></div>
       </div>
 
-      <HowTo />
+      {/* <HowTo /> */}
       <Footer />
     </>
   );

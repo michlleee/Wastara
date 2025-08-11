@@ -35,5 +35,5 @@ export default function LeafletMap({ latitude, longitude, onLocationChange }) {
     }
   }, [latitude, longitude]);
 
-  return <div style={{ height: "400px", width: "400px" }} id="map"></div>;
+  return <div style={{ height: "40vh", width: "100%" }} id="map"></div>;
 }

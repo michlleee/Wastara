@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import logo from "../../assets/WASTARA_black.svg";
+import logo from "../../assets/wastara_logo_small_border.svg";
 import { Menu, X } from "lucide-react"; // You can use any icon lib
 
 const Navbar = () => {
@@ -8,21 +8,23 @@ const Navbar = () => {
 
   return (
     <header className="relative flex justify-between items-center px-6 py-4 bg-transparent text-white">
-      <img
-        src={logo}
-        alt="Wastara Logo"
-        className="ml-2 sm:ml-8 h-8 sm:h-10 w-auto"
-      />
+      <div className="flex flex-row items-center">
+        <img
+          src={logo}
+          alt="Wastara Logo"
+          className="ml-2 sm:ml-8 h-8 sm:h-12 w-auto"
+        />
+        <span className="ml-2 sm:ml-4 text-md sm:text-lg">Wastara</span>
+      </div>
+      
 
-      {/* Desktop Nav */}
-      <nav className="space-x-6 hidden sm:flex">
+      <nav className="space-x-6 hidden mr-25 sm:flex">
         <a href="#about" className="hover:text-green-300">About Us</a>
         <a href="#vision" className="hover:text-green-300">Vision & Mission</a>
         <a href="#features" className="hover:text-green-300">Features</a>
         <a href="#how" className="hover:text-green-300">How to Use</a>
       </nav>
 
-      {/* Desktop Buttons */}
       <div className="hidden sm:flex space-x-2">
         <Link
           to="/login"
@@ -42,28 +44,8 @@ const Navbar = () => {
         >
           Login
         </Link>
-
-        <Link
-          to="/signup/user"
-          className="px-4 py-2 text-base font-bold rounded-xl transition-all"
-          style={{
-            color: '#6D9D58',
-            backgroundColor: '#ffffff',
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.backgroundColor = '#6D9D58';
-            e.currentTarget.style.color = '#ffffff';
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.backgroundColor = '#ffffff';
-            e.currentTarget.style.color = '#6D9D58';
-          }}
-        >
-          Sign Up
-        </Link>
       </div>
 
-      {/* Hamburger for Mobile */}
       <button
         className="sm:hidden text-white focus:outline-none"
         onClick={() => setIsOpen(true)}
@@ -71,7 +53,6 @@ const Navbar = () => {
         <Menu size={28} />
       </button>
 
-      {/* Sidebar for Mobile */}
       {isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-60 z-50">
           <div className="fixed top-0 left-0 w-3/4 max-w-xs h-full bg-white p-6 text-black shadow-lg z-50 flex flex-col gap-6">

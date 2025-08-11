@@ -111,7 +111,7 @@ function LoginPage() {
 
               <button
                 type="submit"
-                className="w-full bg-gray-500 text-white font-semibold py-2 rounded-md hover:bg-gray-600 transition"
+                className="w-full bg-blue-500 text-white font-semibold py-2 rounded-md hover:bg-blue-600 transition"
               >
                 Login
               </button>
@@ -139,7 +139,6 @@ function LoginPage() {
                       ${role === "user" ? "bg-blue-500 left-1" : "bg-green-500 left-[calc(50%-0.125rem)]"}`}
                   ></div>
 
-                  {/* User button */}
                   <button
                     type="button"
                     onClick={() => setRole("user")}
@@ -150,7 +149,6 @@ function LoginPage() {
                     User
                   </button>
 
-                  {/* Organizer button */}
                   <button
                     type="button"
                     onClick={() => setRole("organizer")}
