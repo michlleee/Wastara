@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import LeafletMap from "../components/Leaflet";
+import LeafletMap from "../components/LeafletMap";
+import axios from "axios";
 
 export default function LocationTracker() {
   const [location, setLocation] = useState({
     latitude: 0,
     longitude: 0,
   });
+  const [button, setButton] = useState(false);
 
   const [reportData, setReportData] = useState({
     description: "",
@@ -41,15 +43,39 @@ export default function LocationTracker() {
         maximumAge: 0,
       }
     );
+
+    setButton(true);
   };
 
-  useEffect(() => {
-    triggerLocationRequest();
-  }, []);
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(reportData);
+    if (location.latitude === 0 && location.longitude === 0) {
+      console.log("location is empty, submit request denied");
+      return;
+    }
+    try {
+      const formData = new FormData();
+      formData.append("description", reportData.description);
+      formData.append("status", reportData.status);
+      formData.append("createdAt", reportData.createdAt);
+      formData.append("updatedAt", reportData.updatedAt);
+      formData.append("location", JSON.stringify(reportData.location));
+      if (reportData.trashImage) {
+        formData.append("trashImage", reportData.trashImage);
+      }
+
+      const res = await axios.post("/api/user-dashboard/create", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      });
+
+      const data = res.data;
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleFileChange = (e) => {
@@ -107,18 +133,33 @@ export default function LocationTracker() {
           />
 
           <p>Choose the location of your trash placement:</p>
-          <div className="h-64">
-            <LeafletMap
-              latitude={location.latitude}
-              longitude={location.longitude}
-              onLocationChange={(lat, lng) =>
-                setReportData((prev) => ({
-                  ...prev,
-                  location: { latitude: lat, longitude: lng },
-                }))
-              }
-            />
-          </div>
+          <button
+            type="button"
+            onClick={triggerLocationRequest}
+            className="border-amber-700 border-2 bg-amber-500 hover:bg-amber-600"
+          >
+            Turn on Location
+          </button>
+          <p>
+            pls kindly give us access to your location to know where your trash
+            is placed!
+          </p>
+          {!button ? (
+            <p>map not available. location not found.</p>
+          ) : (
+            <div className="h-64">
+              <LeafletMap
+                latitude={location.latitude}
+                longitude={location.longitude}
+                onLocationChange={(lat, lng) =>
+                  setReportData((prev) => ({
+                    ...prev,
+                    location: { latitude: lat, longitude: lng },
+                  }))
+                }
+              />
+            </div>
+          )}
 
           <button
             type="submit"

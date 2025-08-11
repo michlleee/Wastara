@@ -27,8 +27,8 @@ const reportSchema = new mongoose.Schema({
     default: Date.now,
   },
   location: {
-    lat: Number,
-    lng: Number,
+    latitude: Number,
+    longitude: Number,
   },
   trashImage: String,
 });
