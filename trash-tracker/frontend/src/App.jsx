@@ -6,6 +6,7 @@ import FinishOrganizerSignUp from "./pages/FinishOrganizerSignUp.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import UserDashboard from "./pages/UserDashboard.jsx";
 import OrganizerDashboard from "./pages/OrganizerDashboard.jsx";
+import AddReport from "./pages/AddReport.jsx";
 
 function App() {
   return (
@@ -20,11 +21,12 @@ function App() {
             element={<FinishOrganizerSignUp />}
           />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/dashboard/:mongoId" element={<UserDashboard />} />
+          <Route path="/dashboard/user/" element={<UserDashboard />} />
           <Route
-            path="/dashboard/organizer/:mongoId"
+            path="/dashboard/organizer/"
             element={<OrganizerDashboard />}
           />
+          <Route path="/dashboard/user/report" element={<AddReport />} />
         </Routes>
       </BrowserRouter>
     </>

@@ -5,6 +5,7 @@ import session from "express-session";
 import passport from "passport";
 import dotenv from "dotenv";
 import userRouter from "./routes/users.js";
+import userDashboardRouter from "./routes/userDashboard.js";
 import MongoStore from "connect-mongo";
 import "./config/passport.js";
 import User from "./models/User.js";
@@ -45,6 +46,7 @@ app.use(passport.session());
 
 // Route handlers
 app.use("/api/signup", userRouter);
+app.use("/api/user-dashboard", userDashboardRouter);
 
 app.get("/auth/google", (req, res, next) => {
   const intent = req.query.intent;
@@ -90,7 +92,7 @@ app.get(
               console.error("Login error after setting user role:", err);
               return res.redirect(`${FRONTEND_URL}/login`);
             }
-            return res.redirect(`${FRONTEND_URL}/dashboard/${mongoId}`);
+            return res.redirect(`${FRONTEND_URL}/dashboard/user/`);
           });
         } else {
           console.warn("No intent provided on first-time login.");
@@ -100,9 +102,9 @@ app.get(
 
       // If user already has a role (logins)
       if (user.role === "organizer") {
-        return res.redirect(`${FRONTEND_URL}/dashboard/organizer/${mongoId}`);
+        return res.redirect(`${FRONTEND_URL}/dashboard/organizer/`);
       } else {
-        return res.redirect(`${FRONTEND_URL}/dashboard/${mongoId}`);
+        return res.redirect(`${FRONTEND_URL}/dashboard/user/`);
       }
     } catch (error) {
       console.error("Google login error:", error);
