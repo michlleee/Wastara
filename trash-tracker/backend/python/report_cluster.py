@@ -13,9 +13,9 @@ from sklearn.preprocessing import StandardScaler
 # CONFIG
 # ---------------------------
 WEIGHTS = {
-    "distance": 0.8,   # how much distance from organizer matters
-    "time": 1.0,       # older = more urgent
-    "text": 1.0,       # urgency words in description
+    "distance": 0.8,
+    "time": 1.0,
+    "text": 1.0,
 }
 
 TEXT_URGENCY_WORDS = {
@@ -135,14 +135,38 @@ def cluster_reports(reports: List[Report], organizer: Organizer, k: int = 6) -> 
     
     return {"labels": out, "centroids": centroids}
 
+def pick_top_cluster(res: Dict[str, Any]) -> Dict[str, Any]:
+    clusters = []
+    for c in res.get("centroids", []):
+        cid = c["clusterId"]
+        reps = [r for r in res.get("labels", []) if r["clusterId"] == cid]
+        if not reps:
+            continue
+        urgency = sum((r["time_urg"] + r["text_urg"]) for r in reps) / len(reps)
+        size_boost = len(reps) * 0.1
+        final_score = urgency + size_boost
+        clusters.append({"centroid": c, "reports": reps, "urgency": final_score})
+
+    if not clusters:
+        return {"cluster": None, "reports": []}
+
+    clusters.sort(key=lambda x: x["urgency"], reverse=True)
+    top = clusters[0]
+
+    return {
+        "cluster": {**top["centroid"], "urgencyScore": top["urgency"]},
+        "reports": sorted(top["reports"], key=lambda r: r["time_urg"] + r["text_urg"], reverse=True)
+    }
+
+
+
 def main():
     try:
-        # Read JSON input from stdin
-        input_data = json.loads(sys.stdin.read())
-        
-        # Parse reports
+        raw = sys.stdin.read()
+        input_data = json.loads(raw or "{}")
+
         reports = []
-        for report_data in input_data['reports']:
+        for report_data in input_data.get('reports', []):
             reports.append(Report(
                 _id=report_data['_id'],
                 lat=report_data['lat'],
@@ -150,24 +174,21 @@ def main():
                 description=report_data.get('description'),
                 createdAt=report_data.get('createdAt')
             ))
-        
-        # Parse organizer
+
         org_data = input_data['organizer']
         organizer = Organizer(lat=org_data['lat'], lng=org_data['lng'])
-        
-        # Get k value
+
         k = input_data.get('k', 6)
-        
-        # Run clustering
+
         result = cluster_reports(reports, organizer, k)
-        
-        # Output result as JSON
+        result = pick_top_cluster(result)
+
         print(json.dumps(result))
-        
+
+
     except Exception as e:
-        # Output error to stderr
-        sys.stderr.write(f"Error: {str(e)}\n")
-        sys.exit(1)
+        sys.stderr.write(f"Error: {e!r}\n")
+        sys.exit(1) 
 
 if __name__ == "__main__":
     main()

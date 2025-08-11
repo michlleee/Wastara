@@ -1,5 +1,3 @@
-// ESM route to fetch nearby reports and call Python clustering
-
 import express from "express";
 import Report from "../models/Report.js";
 import { spawn } from "child_process";
@@ -8,7 +6,6 @@ import { fileURLToPath } from "url";
 
 const router = express.Router();
 
-// --- resolve paths ---
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -20,7 +17,6 @@ const PYTHON_BIN =
     ? path.join(PY_DIR, ".venv", "Scripts", "python.exe")
     : path.join(PY_DIR, ".venv", "bin", "python"));
 
-// --- helper to run Python and exchange JSON over stdin/stdout ---
 function runCluster(inputPayload) {
   return new Promise((resolve, reject) => {
     const py = spawn(PYTHON_BIN, [SCRIPT], { cwd: PY_DIR });
