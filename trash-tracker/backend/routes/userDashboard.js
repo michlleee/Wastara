@@ -1,5 +1,4 @@
 import express from "express";
-import User from "../models/User.js";
 import Report from "../models/Report.js";
 import { reportUpload } from "../config/cloudinary.js";
 
@@ -30,13 +29,15 @@ router.post(
   isLoggedIn,
   reportUpload.single("trashImage"),
   async (req, res) => {
-    const { description, status, createdAt, updatedAt } = req.body;
+    const { trashDescription, placeDescription, status, createdAt, updatedAt } =
+      req.body;
     const location = JSON.parse(req.body.location);
     const user = req.user;
     try {
       const newReport = new Report({
         userId: user._id,
-        description: description,
+        trashDescription: trashDescription,
+        placeDescription: placeDescription,
         trashImage: req.file?.path,
         status: status,
         location: location,

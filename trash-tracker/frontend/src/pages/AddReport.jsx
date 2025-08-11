@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import LeafletMap from "../components/LeafletMap";
 import axios from "axios";
 
@@ -10,7 +10,8 @@ export default function LocationTracker() {
   const [button, setButton] = useState(false);
 
   const [reportData, setReportData] = useState({
-    description: "",
+    trashDescription: "",
+    placeDescription: "",
     status: "pending",
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -55,7 +56,8 @@ export default function LocationTracker() {
     }
     try {
       const formData = new FormData();
-      formData.append("description", reportData.description);
+      formData.append("trashDescription", reportData.trashDescription);
+      formData.append("placeDescription", reportData.placeDescription);
       formData.append("status", reportData.status);
       formData.append("createdAt", reportData.createdAt);
       formData.append("updatedAt", reportData.updatedAt);
@@ -119,16 +121,31 @@ export default function LocationTracker() {
 
           <p>Give us a description about your trash!</p>
           <textarea
-            name="description"
-            value={reportData.description}
+            name="trashDescription"
+            value={reportData.trashDescription}
             onChange={(e) =>
               setReportData((prev) => ({
                 ...prev,
-                description: e.target.value,
+                trashDescription: e.target.value,
               }))
             }
             className="border rounded p-2 w-full"
             placeholder="Describe your trash here..."
+            required
+          />
+
+          <p>Give us a description about your trash location</p>
+          <textarea
+            name="placeDescription"
+            value={reportData.placeDescription}
+            onChange={(e) =>
+              setReportData((prev) => ({
+                ...prev,
+                placeDescription: e.target.value,
+              }))
+            }
+            className="border rounded p-2 w-full"
+            placeholder="Describe your trash location here..."
             required
           />
 

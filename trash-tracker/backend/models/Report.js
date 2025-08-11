@@ -6,7 +6,10 @@ const reportSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  description: {
+  trashDescription: {
+    type: String,
+  },
+  placeDescription: {
     type: String,
   },
   status: {
