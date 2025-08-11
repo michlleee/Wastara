@@ -9,6 +9,7 @@ import userDashboardRouter from "./routes/userDashboard.js";
 import MongoStore from "connect-mongo";
 import "./config/passport.js";
 import User from "./models/User.js";
+import clusterRoutes from "./routes/clusterRoutes.js";
 
 dotenv.config();
 
@@ -47,6 +48,8 @@ app.use(passport.session());
 // Route handlers
 app.use("/api/signup", userRouter);
 app.use("/api/user-dashboard", userDashboardRouter);
+// buat cluster report dari user utk dapetin route
+app.use("/api/cluster", clusterRoutes);
 
 app.get("/auth/google", (req, res, next) => {
   const intent = req.query.intent;
@@ -141,3 +144,6 @@ const startServer = async () => {
 };
 
 startServer();
+
+// =====================
+

@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import GetClusters from "../components/DashboardPage/GetClusters";
 
 function OrganizerDashboard() {
   const { mongoId } = useParams();
@@ -41,6 +42,7 @@ function OrganizerDashboard() {
       <p>Email: {organizerData.email}</p>
       <p>Role: {organizerData.role}</p>
       <p>pickup count: {organizerData.pickupCount}</p>
+      <GetClusters />
     </div>
   );
 }
