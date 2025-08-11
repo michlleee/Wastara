@@ -52,7 +52,7 @@ function FinishOrganizerSignUp() {
 
       if (data.message === "Success") {
         setTimeout(() => {
-          navigate(`/dashboard/organizer/${data.user.id}`);
+          navigate(`/dashboard/organizer/`);
         }, 0);
       }
 

@@ -48,7 +48,6 @@ app.use(passport.session());
 // Route handlers
 app.use("/api/signup", userRouter);
 app.use("/api/user-dashboard", userDashboardRouter);
-// buat cluster report dari user utk dapetin route
 app.use("/api/cluster", clusterRoutes);
 
 app.get("/auth/google", (req, res, next) => {
@@ -146,4 +145,3 @@ const startServer = async () => {
 startServer();
 
 // =====================
-

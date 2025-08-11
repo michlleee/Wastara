@@ -41,13 +41,14 @@ function runCluster(inputPayload) {
 
 router.post("/find", async (req, res) => {
   try {
-    const lat = Number(req.body.lat);
-    const lng = Number(req.body.lng);
     const k = Number(req.body.k) || 6;
-    const radiusKm = Number(req.body.radius_km) || 5;
+    const radiusKm = Number(req.body.radiusKm) || 5;
+    const { lat, lng } = req.body;
 
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
-      return res.status(400).json({ error: "lat and lng are required numbers" });
+      return res
+        .status(400)
+        .json({ error: "lat and lng are required numbers" });
     }
 
     const reports = await Report.find({
