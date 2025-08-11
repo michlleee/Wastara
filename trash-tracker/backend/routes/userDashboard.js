@@ -55,4 +55,31 @@ router.post(
   }
 );
 
+router.get("/reports/nearby", async (req, res) => {
+  try {
+    const lng = parseFloat(req.query.lng);
+    const lat = parseFloat(req.query.lat);
+    const radiusInKm = parseFloat(req.query.radius) || 5;
+    const EARTH_RADIUS_KM = 6378.1;
+    if (isNaN(lng) || isNaN(lat)) {
+      return res
+        .status(400)
+        .json({ error: "Invalid or missing longitude/latitude" });
+    }
+
+    const reports = await Report.find({
+      location: {
+        $geoWithin: {
+          $centerSphere: [[lng, lat], radiusInKm / EARTH_RADIUS_KM],
+        },
+      },
+    });
+
+    res.json(reports);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 export default router;

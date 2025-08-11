@@ -16,6 +16,7 @@ const LandingPage = () => {
       >
         <div className="relative z-20 flex flex-col min-h-screen">
           <Navbar />
+
           <HeroSection />
 
           <div className="relative w-full h-20 z-10">

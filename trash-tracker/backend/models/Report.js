@@ -30,12 +30,20 @@ const reportSchema = new mongoose.Schema({
     default: Date.now,
   },
   location: {
-    latitude: Number,
-    longitude: Number,
+    type: {
+      type: String,
+      enum: ["Point"],
+      required: true,
+    },
+    coordinates: {
+      type: [Number],
+      required: true,
+    },
   },
   trashImage: String,
 });
 
+reportSchema.index({ location: "2dsphere" });
 reportSchema.pre("save", function (next) {
   this.updatedAt = Date.now();
   next();

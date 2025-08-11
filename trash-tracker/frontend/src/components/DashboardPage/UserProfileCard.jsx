@@ -1,8 +1,31 @@
-const UserProfileCard = ({ name }) => {
+import { useEffect, useState } from "react";
 
-  const now = new Date();
+const UserProfileCard = ({ name }) => {
+  const [now, setNow] = useState(new Date());
+
+  useEffect(() => {
+    setNow(new Date());
+
+    const msUntilNextMinute = (60 - new Date().getSeconds()) * 1000;
+
+    const timeout = setTimeout(() => {
+      setNow(new Date());
+
+      const interval = setInterval(() => {
+        setNow(new Date());
+      }, 60 * 1000);
+
+      return () => clearInterval(interval);
+    }, msUntilNextMinute);
+
+    return () => clearTimeout(timeout);
+  }, []);
+
   const dayName = now.toLocaleDateString("en-US", { weekday: "long" });
-  const dateString = now.toLocaleDateString("en-US", { day: "numeric", month: "long" });
+  const dateString = now.toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "long",
+  });
   const timeString = now.toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
@@ -12,7 +35,7 @@ const UserProfileCard = ({ name }) => {
   return (
     <div className="relative overflow-hidden rounded-lg shadow-lg/30 bg-white w-full mb-6">
       {/* Top Background with Gradient */}
-      <div className="bg-gradient-to-br from-[#445D48] to-[#3A4D3D] text-white p-4 ">
+      <div className="bg-gradient-to-br from-[#2d5033] to-[#4f9259] text-white p-4 ">
         <div className="flex justify-between items-end ml-2">
           <div>
             <h2 className="text-lg sm:text-3xl font-bold mb-1">Hello,</h2>
@@ -33,7 +56,9 @@ const UserProfileCard = ({ name }) => {
                 />
               </svg>
             </div>
-            <p className="text-xs sm:text-base mb-2">{dayName}, {dateString}</p>
+            <p className="text-xs sm:text-base mb-2">
+              {dayName}, {dateString}
+            </p>
             <p className="text-sm sm:text-xl font-semibold">{timeString}</p>
           </div>
         </div>
@@ -46,24 +71,20 @@ const UserProfileCard = ({ name }) => {
 
       {/* Location Footer (White Bar Full Width) */}
       <div className="bg-white px-8 py-4 flex items-center text-black">
-        <svg
-          className="w-5 h-5 mr-2"
-          fill="currentColor"
-          viewBox="0 0 24 24"
-        >
+        <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
           <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22S19 14.25 19 9C19 5.13 15.87 2 12 2M12 11.5C10.62 11.5 9.5 10.38 9.5 9S10.62 6.5 12 6.5 14.5 7.62 14.5 9 13.38 11.5 12 11.5Z" />
         </svg>
         Tangerang, Banten
       </div>
 
       {/* Grid Overlay */}
-      <div className="absolute inset-0 opacity-30 z-0 pointer-events-none">
+      <div className="absolute inset-0 opacity-60 z-0 pointer-events-none">
         <div
           className="w-full h-full"
           style={{
             backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
                               linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-            backgroundSize: '24px 24px'
+            backgroundSize: "24px 24px",
           }}
         ></div>
       </div>
