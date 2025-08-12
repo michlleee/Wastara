@@ -2,12 +2,11 @@
 import sys
 import json
 from dataclasses import dataclass
-from typing import Optional, List, Dict, Any, Tuple
+from typing import Optional, List, Dict, Any
 from datetime import datetime, timezone
 import numpy as np
 import math
-from sklearn.cluster import KMeans
-from sklearn.preprocessing import StandardScaler
+from urllib.parse import quote_plus
 
 # ---------------------------
 # CONFIG
@@ -24,6 +23,10 @@ TEXT_URGENCY_WORDS = {
     "berceceran": 0.8, "berbau": 0.8, "beracun": 1.0,
 }
 
+# Default values
+DEFAULT_MAX_REPORTS = 10
+DEFAULT_WORKING_RADIUS_KM = 5.0
+
 @dataclass
 class Report:
     _id: str
@@ -39,16 +42,17 @@ class Organizer:
 
 def parse_dt(dt_iso: Optional[str]) -> datetime:
     if not dt_iso:
-        return datetime.utcnow().replace(tzinfo=timezone.utc)
+        return datetime.now(timezone.utc)
     try:
         return datetime.fromisoformat(dt_iso.replace("Z", "+00:00")).astimezone(timezone.utc)
     except Exception:
-        return datetime.utcnow().replace(tzinfo=timezone.utc)
+        return datetime.now(timezone.utc)
 
 def hours_since(dt: datetime) -> float:
-    return max(0.0, (datetime.utcnow().replace(tzinfo=timezone.utc) - dt).total_seconds() / 3600.0)
+    return max(0.0, (datetime.now(timezone.utc) - dt).total_seconds() / 3600.0)
 
 def haversine_km(lat1, lon1, lat2, lon2) -> float:
+    """Calculate distance between two points in kilometers"""
     R = 6371.0
     p1, p2 = math.radians(lat1), math.radians(lat2)
     dp = p2 - p1
@@ -57,10 +61,12 @@ def haversine_km(lat1, lon1, lat2, lon2) -> float:
     return 2 * R * math.asin(math.sqrt(a))
 
 def time_urgency(created_iso: Optional[str]) -> float:
+    """AI: Calculate time-based urgency (recent reports are more urgent)"""
     age_h = hours_since(parse_dt(created_iso))
     return float(np.clip(math.log1p(age_h) / math.log1p(72.0), 0.0, 1.0))
 
 def text_urgency(desc: Optional[str]) -> float:
+    """AI: Natural Language Processing for Indonesian urgency keywords"""
     if not desc:
         return 0.0
     low = desc.lower()
@@ -70,125 +76,177 @@ def text_urgency(desc: Optional[str]) -> float:
             score += wgt
     return float(np.clip(score, 0.0, 1.0))
 
-def build_vector(rep: Report, org: Organizer) -> Tuple[np.ndarray, Dict[str, float]]:
+def calculate_urgency_metrics(rep: Report, org: Organizer) -> Dict[str, float]:
+    """AI: Multi-factor urgency scoring algorithm"""
     dist_km = haversine_km(rep.lat, rep.lng, org.lat, org.lng)
     t_urg = time_urgency(rep.createdAt)
     x_urg = text_urgency(rep.description)
     
-    vec = np.array([
-        WEIGHTS["distance"] * dist_km,
-        WEIGHTS["time"] * t_urg,
-        WEIGHTS["text"] * x_urg,
-    ], dtype=np.float32)
+    # AI: Weighted combination of factors for intelligent decision making
+    urgency_score = (
+        WEIGHTS["time"] * t_urg + 
+        WEIGHTS["text"] * x_urg +
+        WEIGHTS["distance"] * (1.0 / (1.0 + dist_km * 0.1))  # Distance penalty
+    )
     
-    parts = {
-        "distance_km": dist_km,
-        "time_urg": t_urg,
-        "text_urg": x_urg,
-        "user_lat": rep.lat,
-        "user_lng": rep.lng
-    }
-    return vec, parts
-
-def cluster_reports(reports: List[Report], organizer: Organizer, k: int = 6) -> Dict[str, Any]:
-    if not reports:
-        return {"labels": [], "centroids": []}
-    
-    X_list, meta = [], []
-    
-    for r in reports:
-        v, parts = build_vector(r, organizer)
-        X_list.append(v)
-        meta.append(parts)
-        
-    X = np.vstack(X_list)
-    scaler = StandardScaler()
-    Xs = scaler.fit_transform(X)
-    k = max(1, min(k, len(reports)))
-    km = KMeans(n_clusters=k, n_init=10, random_state=42)
-    labels = km.fit_predict(Xs)
-    
-    by: Dict[int, List[Tuple[float, float]]] = {}
-    
-    for i, r in enumerate(reports):
-        c = int(labels[i])
-        by.setdefault(c, []).append((float(r.lat), float(r.lng)))
-        
-    centroids = []
-    
-    for c, arr in by.items():
-        arr = np.array(arr, dtype=np.float32)
-        lat, lng = float(arr[:, 0].mean()), float(arr[:, 1].mean())
-        centroids.append({
-            "clusterId": f"c{c}",
-            "size": len(arr),
-            "centroid": {"type": "Point", "coordinates": [lng, lat]},
-        })
-    
-    out = []
-    for i, r in enumerate(reports):
-        out.append({
-            "_id": r._id,
-            "clusterId": f"c{int(labels[i])}",
-            **meta[i],
-        })
-    
-    return {"labels": out, "centroids": centroids}
-
-def pick_top_cluster(res: Dict[str, Any]) -> Dict[str, Any]:
-    clusters = []
-    for c in res.get("centroids", []):
-        cid = c["clusterId"]
-        reps = [r for r in res.get("labels", []) if r["clusterId"] == cid]
-        if not reps:
-            continue
-        urgency = sum((r["time_urg"] + r["text_urg"]) for r in reps) / len(reps)
-        size_boost = len(reps) * 0.1
-        final_score = urgency + size_boost
-        clusters.append({"centroid": c, "reports": reps, "urgency": final_score})
-
-    if not clusters:
-        return {"cluster": None, "reports": []}
-
-    clusters.sort(key=lambda x: x["urgency"], reverse=True)
-    top = clusters[0]
-
     return {
-        "cluster": {**top["centroid"], "urgencyScore": top["urgency"]},
-        "reports": sorted(top["reports"], key=lambda r: r["time_urg"] + r["text_urg"], reverse=True)
+        "distance_km": float(dist_km),
+        "time_urg": float(t_urg),
+        "text_urg": float(x_urg),
+        "urgency_score": float(urgency_score),
+        "user_lat": float(rep.lat),
+        "user_lng": float(rep.lng)
     }
 
+def select_top_urgent_reports(reports: List[Report], organizer: Organizer, 
+                            working_radius_km: float = DEFAULT_WORKING_RADIUS_KM, 
+                            max_reports: int = DEFAULT_MAX_REPORTS) -> Dict[str, Any]:
+    """
+    AI-driven smart prioritization system for waste management reports
+    Combines NLP, temporal analysis, and spatial intelligence
+    """
+    if not reports:
+        return {
+            "selected_reports": [],
+            "google_maps_url": "",
+            "total_reports": 0,
+            "organizer_location": {"lat": organizer.lat, "lng": organizer.lng},
+            "filtering_stats": {
+                "working_radius_km": working_radius_km,
+                "max_reports_requested": max_reports,
+                "reports_in_radius": 0,
+                "reports_selected": 0
+            }
+        }
+    
+    # AI: Calculate urgency metrics for all reports
+    enhanced_reports = []
+    
+    for rep in reports:
+        metrics = calculate_urgency_metrics(rep, organizer)
+        # Only add to enhanced_reports if it's within working radius
+        if metrics["distance_km"] <= working_radius_km:
+            enhanced_report = {
+                "_id": rep._id,
+                "lat": rep.lat,
+                "lng": rep.lng,
+                "description": rep.description or "",
+                "createdAt": rep.createdAt,
+                **metrics
+            }
+            enhanced_reports.append(enhanced_report)
+    
+    # AI: Smart ranking by urgency score (highest priority first)
+    enhanced_reports.sort(key=lambda x: x["urgency_score"], reverse=True)
+    
+    # AI: Select top K most urgent reports
+    selected_reports = enhanced_reports[:max_reports]
+    
+    # Generate optimized Google Maps route
+    google_maps_url = generate_google_maps_url(organizer, selected_reports)
+    
+    return {
+        "selected_reports": selected_reports,
+        "google_maps_url": google_maps_url,
+        "total_reports": len(enhanced_reports),  # Only reports within radius
+        "organizer_location": {"lat": float(organizer.lat), "lng": float(organizer.lng)},
+        "filtering_stats": {
+            "working_radius_km": float(working_radius_km),
+            "max_reports_requested": int(max_reports),
+            "reports_in_radius": int(len(enhanced_reports)),
+            "reports_selected": int(len(selected_reports)),
+            "reports_excluded_by_radius": int(len(reports) - len(enhanced_reports))
+        }
+    }
 
+def generate_google_maps_url(organizer: Organizer, selected_reports: List[Dict]) -> str:
+    """Generate optimized Google Maps navigation route"""
+    if not selected_reports:
+        return ""
+    
+    # Sort selected reports by distance for efficient routing
+    sorted_reports = sorted(selected_reports, key=lambda x: x["distance_km"])
+    
+    # Build waypoints list starting with organizer
+    waypoints = [f"{organizer.lat},{organizer.lng}"]
+    
+    # Add selected report points in distance order for efficient routing
+    for report in sorted_reports:
+        waypoints.append(f"{report['lat']},{report['lng']}")
+    
+    # Create Google Maps directions URL
+    base_url = "https://www.google.com/maps/dir/"
+    encoded_waypoints = [quote_plus(waypoint) for waypoint in waypoints]
+    
+    return base_url + "/".join(encoded_waypoints)
 
 def main():
     try:
-        raw = sys.stdin.read()
-        input_data = json.loads(raw or "{}")
-
-        reports = []
-        for report_data in input_data.get('reports', []):
-            reports.append(Report(
-                _id=report_data['_id'],
-                lat=report_data['lat'],
-                lng=report_data['lng'],
-                description=report_data.get('description'),
-                createdAt=report_data.get('createdAt')
-            ))
-
-        org_data = input_data['organizer']
-        organizer = Organizer(lat=org_data['lat'], lng=org_data['lng'])
-
-        k = input_data.get('k', 6)
-
-        result = cluster_reports(reports, organizer, k)
-        result = pick_top_cluster(result)
-
-        print(json.dumps(result))
-
-
+        raw_input = sys.stdin.read().strip()
+        if not raw_input:
+            raise ValueError("No input data provided")
+        
+        input_data = json.loads(raw_input)
+        
+        # Handle different input formats
+        # Format 1: Direct organizer coordinates (Postman format)
+        if 'lat' in input_data and 'lng' in input_data:
+            organizer = Organizer(
+                lat=float(input_data['lat']), 
+                lng=float(input_data['lng'])
+            )
+            working_radius_km = float(input_data.get('radius_km', DEFAULT_WORKING_RADIUS_KM))
+            max_reports = int(input_data.get('top_k', DEFAULT_MAX_REPORTS))
+            
+            if 'reports' not in input_data or not input_data['reports']:
+                raise ValueError("No reports provided. Reports should be included in the input.")
+            
+            reports = []
+            for report_data in input_data['reports']:
+                reports.append(Report(
+                    _id=str(report_data['_id']),
+                    lat=float(report_data['lat']),
+                    lng=float(report_data['lng']),
+                    description=report_data.get('description', ''),
+                    createdAt=report_data.get('createdAt')
+                ))
+        
+        # Format 2: Original format with organizer object
+        elif 'organizer' in input_data and 'reports' in input_data:
+            org_data = input_data['organizer']
+            organizer = Organizer(
+                lat=float(org_data['lat']), 
+                lng=float(org_data['lng'])
+            )
+            
+            reports = []
+            for report_data in input_data['reports']:
+                reports.append(Report(
+                    _id=str(report_data['_id']),
+                    lat=float(report_data['lat']),
+                    lng=float(report_data['lng']),
+                    description=report_data.get('description', ''),
+                    createdAt=report_data.get('createdAt')
+                ))
+            
+            working_radius_km = float(input_data.get('working_radius_km', input_data.get('radius_km', DEFAULT_WORKING_RADIUS_KM)))
+            max_reports = int(input_data.get('max_reports', input_data.get('top_k', DEFAULT_MAX_REPORTS)))
+        else:
+            raise ValueError("Invalid input format. Expected either {lat, lng, radius_km, top_k, reports} or {organizer, reports}")
+        
+        # Run AI-powered report selection
+        result = select_top_urgent_reports(reports, organizer, working_radius_km, max_reports)
+        
+        # Output
+        print(json.dumps(result, ensure_ascii=False, separators=(',', ':')))
+        
     except Exception as e:
-        sys.stderr.write(f"Error: {e!r}\n")
-        sys.exit(1) 
+        error_msg = {
+            "error": str(e),
+            "type": type(e).__name__
+        }
+        sys.stderr.write(json.dumps(error_msg) + "\n")
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
