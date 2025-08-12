@@ -6,33 +6,53 @@ import ActivePickups from "../components/DashboardPage/ActivePickups";
 import MonthlyReportCard from "../components/DashboardPage/MonthlyReportCard";
 import ReportNowCard from "../components/DashboardPage/ReportNowCard";
 import UserCard from "../components/DashboardPage/UserProfileCard";
-import { User } from "lucide-react";
 
 const UserDashboard = () => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [reports, setReports] = useState([]);
+
+  const getAllReports = async () => {
+    try {
+      const { data } = await axios.get(
+        "http://localhost:3000/api/user-dashboard/reports",
+        { withCredentials: true }
+      );
+
+      if (Array.isArray(data)) {
+        setReports(data);
+      } else if (data && typeof data.message === "string") {
+        setReports([]);
+      } else {
+        setReports([]);
+      }
+    } catch (err) {
+      setReports([]);
+    }
+  };
+
+  const fetchUserData = async () => {
+    try {
+      const result = await axios.get("http://localhost:3000/api/me", {
+        withCredentials: true,
+      });
+
+      setUserData(result.data);
+    } catch (err) {
+      if (err.response && err.response.data?.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("An unexpected error occurred");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const result = await axios.get("http://localhost:3000/api/me", {
-          withCredentials: true,
-        });
-
-        setUserData(result.data);
-      } catch (err) {
-        if (err.response && err.response.data?.message) {
-          setError(err.response.data.message);
-        } else {
-          setError("An unexpected error occurred");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchUserData();
+    getAllReports();
   }, []);
 
   if (loading) return <p>Loading...</p>;
@@ -50,7 +70,7 @@ const UserDashboard = () => {
               <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <StatCard
                   title="Total trash reported:"
-                  value={134}
+                  value={reports.length}
                   unit="trashes"
                   icon={<span className="text-xl">😊</span>}
                 />

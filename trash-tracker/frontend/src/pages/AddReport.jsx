@@ -8,6 +8,9 @@ export default function LocationTracker() {
   const [button, setButton] = useState(false);
   const navigate = useNavigate();
 
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
   const [reportData, setReportData] = useState({
     trashDescription: "",
     placeDescription: "",
@@ -54,6 +57,8 @@ export default function LocationTracker() {
       console.log("location is empty, submit request denied");
       return;
     }
+
+    setLoading(true);
     try {
       const formData = new FormData();
       formData.append("trashDescription", reportData.trashDescription);
@@ -74,7 +79,17 @@ export default function LocationTracker() {
       });
 
       const data = res.data;
-      console.log(data);
+      if (data.message === "New report created") {
+        setSubmitted(true);
+        setLoading(false);
+
+        setTimeout(() => {
+          navigate("/dashboard/user");
+        }, 1000);
+      } else {
+        console.log("report creation failed");
+        setLoading(false);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -211,9 +226,21 @@ export default function LocationTracker() {
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-emerald-600 to-green-700 hover:from-emerald-700 hover:to-green-800 text-white px-6 py-3 rounded-xl shadow-lg transition transform hover:scale-[1.02] font-semibold"
+              disabled={loading}
+              className={`w-full 
+                ${
+                  loading || submitted
+                    ? "bg-green-200 text-green-800 cursor-not-allowed"
+                    : "bg-gradient-to-r from-emerald-600 to-green-700 hover:from-emerald-700 hover:to-green-800 text-white"
+                }
+                px-6 py-3 rounded-xl shadow-lg transition transform hover:scale-[1.02] font-semibold
+              `}
             >
-              Submit Report
+              {loading
+                ? "Submitting..."
+                : submitted
+                ? "Submitted successfully!"
+                : "Submit Report"}
             </button>
           </form>
         </div>
