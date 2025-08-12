@@ -19,6 +19,8 @@
     "@tailwindcss/vite": "^4.1.11",
     "axios": "^1.11.0",
     "framer-motion": "^12.23.12",
+    "haversine": "^1.1.1",
+    "haversine-distance": "^1.2.4",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.536.0",
     "react": "^19.1.0",

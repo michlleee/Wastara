@@ -39,17 +39,19 @@ function OrganizerDashboard() {
 
   const handleGetClusters = async () => {
     try {
-      const res = await axios.post("http://localhost:3000/api/cluster/find", {
-        lat: lat,
-        lng: lon,
-        k: 5,
-        radiusKm: kilometer,
-      });
+      const res = await axios.post(
+        "http://localhost:3000/api/cluster/find",
+        {
+          lat: lat,
+          lng: lon,
+          k: pickupPoint,
+          radiusKm: kilometer,
+        },
+        { withCredentials: true }
+      );
       console.log("Cluster result:", res.data);
-      alert("Clusters fetched! Check console for details.");
     } catch (err) {
       console.error("Error fetching clusters:", err);
-      alert("Failed to get clusters");
     }
   };
 

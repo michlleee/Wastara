@@ -4,6 +4,9 @@ import Report from "../models/Report.js";
 import { spawn } from "child_process";
 import path from "path";
 import { fileURLToPath } from "url";
+import haversine from "haversine-distance";
+
+const MAX_DISTANCE_METERS = 500;
 
 const router = express.Router();
 
@@ -40,60 +43,209 @@ function runRank(inputPayload) {
   });
 }
 
-router.post("/find", async (req, res) => {
-  try {
-    const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+function isValidCoordinate(coord) {
+  return coord !== null && coord !== undefined && Number.isFinite(coord);
+}
 
-    const { lat, lng } = req.body;
-    if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
-      return res.status(400).json({ error: "lat and lng are required numbers" });
+function filterValidReports(reports) {
+  return reports.filter((report) => {
+    if (
+      !report.location ||
+      !report.location.coordinates ||
+      !Array.isArray(report.location.coordinates)
+    ) {
+      console.warn(`Report ${report._id} missing location data`);
+      return false;
     }
 
-    const topK = clamp(Number(req.body.top_k ?? req.body.k ?? 10), 1, 50);
-    const workingRadiusKm = clamp(
-      Number(req.body.radius_km ?? req.body.radiusKm ?? HARD_MAX_KM),
-      2,
-      HARD_MAX_KM
-    );
+    const [lng, lat] = report.location.coordinates;
+    if (!isValidCoordinate(lat) || !isValidCoordinate(lng)) {
+      console.warn(
+        `Report ${report._id} has invalid coordinates: lat=${lat}, lng=${lng}`
+      );
+      return false;
+    }
 
-    const reports = await Report.find({
-      status: { $in: ["pending", "in_progress"] },
-      location: {
-        $geoWithin: {
-          $centerSphere: [[lng, lat], HARD_MAX_KM / 6378.1],
+    return true;
+  });
+}
+
+router.post(
+  "/find",
+  (req, res, next) => {
+    if (req.isAuthenticated()) return next();
+    return res.status(401).json({ error: "Not authenticated" });
+  },
+  async (req, res) => {
+    try {
+      const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+      const { lat, lng, radiusKm, k } = req.body;
+
+      // Enhanced validation
+      if (!isValidCoordinate(lat) || !isValidCoordinate(lng)) {
+        return res
+          .status(400)
+          .json({ error: "lat and lng are required valid numbers" });
+      }
+
+      if (!isValidCoordinate(radiusKm) || !isValidCoordinate(k)) {
+        return res
+          .status(400)
+          .json({ error: "radiusKm and k must be valid numbers" });
+      }
+
+      const topK = clamp(Number(k), 1, 50);
+      const workingRadiusKm = clamp(Number(radiusKm), 1, 20);
+
+      const organizerId = req.user._id;
+      const currentLoc = { latitude: lat, longitude: lng };
+
+      //Check unfinished reports for this organizer
+      const unfinishedReports = await Report.find({
+        assignedOrganizerId: organizerId,
+        status: "in-progress",
+      }).lean();
+
+      // Filter out reports with invalid coordinates
+      const validUnfinishedReports = filterValidReports(unfinishedReports);
+
+      if (validUnfinishedReports.length > 0) {
+        const anyLoc = validUnfinishedReports[0].location.coordinates;
+        const lastLoc = { latitude: anyLoc[1], longitude: anyLoc[0] };
+        const distance = haversine(currentLoc, lastLoc);
+
+        if (distance <= MAX_DISTANCE_METERS) {
+          //Still nearby → merge unfinished with any new unassigned in the area
+          const nearbyNewReports = await Report.find({
+            assignedOrganizerId: { $exists: false },
+            status: "pending",
+            location: {
+              $geoWithin: {
+                $centerSphere: [[lng, lat], workingRadiusKm / 6378.1],
+              },
+            },
+          }).lean();
+
+          const validNearbyNewReports = filterValidReports(nearbyNewReports);
+          const combinedReports = [
+            ...validUnfinishedReports,
+            ...validNearbyNewReports,
+          ];
+
+          if (combinedReports.length > 0) {
+            // Let AI pick the best cluster from combined
+            const payload = {
+              organizer: { lat: Number(lat), lng: Number(lng) },
+              radius_km: Number(workingRadiusKm),
+              top_k: Number(topK),
+              reports: combinedReports.map((r) => ({
+                _id: r._id.toString(),
+                lat: Number(r.location.coordinates[1]),
+                lng: Number(r.location.coordinates[0]),
+                description: r.placeDescription || "",
+                createdAt: r.createdAt ? r.createdAt.toISOString() : null,
+              })),
+            };
+
+            const result = await runRank(payload);
+            console.log(
+              "Nearby unfinished + new reports assigned via AI:",
+              result
+            );
+            const idsToAssign = result.selected_reports.map((r) => r._id);
+
+            await Report.updateMany(
+              { _id: { $in: idsToAssign } },
+              {
+                $set: {
+                  assignedOrganizerId: organizerId,
+                  status: "in-progress",
+                },
+              }
+            );
+
+            return res.json({
+              message: "Nearby unfinished + new reports assigned via AI",
+              assigned_count: idsToAssign.length,
+              organizerId,
+              selected_reports: result.selected_reports,
+            });
+          }
+        } else {
+          // Moved far away → unassign old unfinished
+          await Report.updateMany(
+            {
+              _id: { $in: validUnfinishedReports.map((r) => r._id) },
+              status: { $in: ["in-progress"] },
+            },
+            {
+              $unset: { assignedOrganizerId: "" },
+              $set: { status: "pending" },
+            }
+          );
+        }
+      }
+
+      const reports = await Report.find({
+        status: "pending",
+        assignedOrganizerId: { $exists: false },
+        location: {
+          $geoWithin: {
+            $centerSphere: [[lng, lat], HARD_MAX_KM / 6378.1],
+          },
         },
-      },
-    }).lean();
+      }).lean();
 
-    if (!reports.length) {
-      return res.json({
-        count_in_radius: 0,
-        selected_count: 0,
-        selected_reports: [],
-        google_maps_url: "",
+      // Filter out reports with invalid coordinates
+      const validReports = filterValidReports(reports);
+
+      if (!validReports.length) {
+        return res.json({
+          count_in_radius: 0,
+          selected_count: 0,
+          selected_reports: [],
+          google_maps_url: "",
+        });
+      }
+
+      const payload = {
+        organizer: { lat: Number(lat), lng: Number(lng) },
+        radius_km: Number(workingRadiusKm),
+        top_k: Number(topK),
+        reports: validReports.map((r) => ({
+          _id: r._id.toString(),
+          lat: Number(r.location.coordinates[1]),
+          lng: Number(r.location.coordinates[0]),
+          description: r.placeDescription || "",
+          createdAt: r.createdAt ? r.createdAt.toISOString() : null,
+        })),
+      };
+
+      // console.log(
+      //   "Payload being sent to Python:",
+      //   JSON.stringify(payload, null, 2)
+      // );
+
+      const result = await runRank(payload);
+      console.log("newly unassigned reports:", result);
+      const idsToAssign = result.selected_reports.map((r) => r._id);
+      await Report.updateMany(
+        { _id: { $in: idsToAssign } },
+        { $set: { assignedOrganizerId: organizerId, status: "in-progress" } }
+      );
+
+      return res.status(200).json({
+        message: "New cluster assigned via AI",
+        assigned_count: idsToAssign.length,
+        organizerId,
+        selected_reports: result.selected_reports,
       });
+    } catch (e) {
+      console.error("Urgent ranking error:", e);
+      return res.status(500).json({ error: e.message });
     }
-
-    // Build payload for Python
-    const payload = {
-      organizer: { lat, lng },
-      radius_km: workingRadiusKm, // organizer's chosen working radius (2–10)
-      top_k: topK,
-      reports: reports.map((r) => ({
-        _id: r._id.toString(),
-        lat: r.location.coordinates[1],
-        lng: r.location.coordinates[0],
-        description: r.placeDescription || "",
-        createdAt: r.createdAt ? r.createdAt.toISOString() : null,
-      })),
-    };
-
-    const result = await runRank(payload);
-    return res.json(result);
-  } catch (e) {
-    console.error("Urgent ranking error:", e);
-    return res.status(500).json({ error: e.message });
   }
-});
+);
 
 export default router;
