@@ -1,20 +1,20 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../../assets/wastara_logo_small_border.svg";
-import { Menu, X } from "lucide-react"; // You can use any icon lib
+import { Menu, X } from "lucide-react";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <header className="relative flex justify-between items-center px-6 py-4 bg-transparent text-white">
+    <header className="relative flex justify-between items-center px-6 py-4 bg-transparent text-white sticky top-0 z-50">
       <div className="flex flex-row items-center">
         <img
           src={logo}
           alt="Wastara Logo"
           className="ml-2 sm:ml-8 h-8 sm:h-12 w-auto"
         />
-        <span className="ml-2 sm:ml-4 text-md sm:text-lg">Wastara</span>
+        <span className="ml-2 sm:ml-4 text-md sm:text-lg font-extrabold">Wastara</span>
       </div>
       
 
@@ -72,13 +72,6 @@ const Navbar = () => {
 
             <Link to="/login" onClick={() => setIsOpen(false)} className="text-[#6D9D58] font-semibold">
               Login
-            </Link>
-            <Link
-              to="/signup/user"
-              onClick={() => setIsOpen(false)}
-              className="bg-[#6D9D58] text-white px-4 py-2 rounded-md font-bold"
-            >
-              Sign Up
             </Link>
           </div>
         </div>

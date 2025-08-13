@@ -105,7 +105,7 @@ export default function AddReport() {
 
   return (
     <>
-      <div className="flex justify-center items-center w-full min-h-svh bg-gray-600 p-6">
+      <div className="flex justify-center items-center w-full min-h-svh bg-gray-300 p-6">
         <button
           onClick={() => navigate(-1)}
           className="absolute top-4 left-4 p-2 rounded-full bg-black hover:bg-gray-900 transition shadow-lg"

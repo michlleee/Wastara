@@ -1,12 +1,18 @@
 # backend/python/report_cluster.py
 import sys
 import json
+import os
+import requests
 from dataclasses import dataclass
 from typing import Optional, List, Dict, Any
 from datetime import datetime, timezone
 import numpy as np
 import math
 from urllib.parse import quote_plus
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '..', '.env'))
 
 # ---------------------------
 # CONFIG
@@ -25,6 +31,12 @@ TEXT_URGENCY_WORDS = {
 
 DEFAULT_MAX_REPORTS = 10
 DEFAULT_WORKING_RADIUS_KM = 5.0
+
+# Groq API Configuration
+GROQ_API_BASE_URL = "https://api.groq.com/openai/v1"
+GROQ_MODEL = "llama-3.1-8b-instant"
+LLM_TIMEOUT_SECONDS = 10
+LLM_WEIGHT = 0.7  # Weight for LLM vs keywords (0.7 = 70% LLM, 30% keywords)
 
 @dataclass
 class Report:
@@ -61,6 +73,91 @@ def haversine_km(lat1, lon1, lat2, lon2) -> float:
     dl = math.radians(lon2 - lon1)
     a = math.sin(dp/2)**2 + math.cos(p1)*math.cos(p2)*math.sin(dl/2)**2
     return 2 * R * math.asin(math.sqrt(a))
+
+# ---------------------------
+# LLM Integration (Groq API)
+# ---------------------------
+def get_batch_groq_urgency_scores(descriptions: List[str]) -> Dict[str, float]:
+    """
+    Use Groq API to analyze urgency of multiple waste report descriptions in one call.
+    Returns dict mapping description to urgency score (0.0-1.0).
+    """
+    api_key = os.environ.get('GROQ_API_KEY')
+    if not api_key or not descriptions:
+        return {}
+    
+    # Build batch prompt
+    numbered_reports = []
+    for i, desc in enumerate(descriptions, 1):
+        numbered_reports.append(f"{i}. \"{desc}\"")
+    
+    reports_text = "\n".join(numbered_reports)
+    
+    prompt = f"""Analyze these Indonesian waste management reports and rate each urgency from 0.0 to 1.0:
+
+{reports_text}
+
+Consider these factors:
+- Health hazards (toxic, chemical, medical waste)
+- Environmental impact (water contamination, air pollution)
+- Scale/volume (large amounts, widespread)
+- Immediate dangers (blocking roads, flooding risk)
+- Odor/pest issues
+
+Rating scale:
+- 0.0-0.3: Low urgency (normal waste, small amounts)
+- 0.4-0.6: Medium urgency (larger amounts, some concerns)
+- 0.7-0.9: High urgency (health/environmental risks)
+- 1.0: Critical urgency (immediate danger, toxic materials)
+
+Respond with ONLY numbers, one per line, in the same order:"""
+
+    try:
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
+        }
+        
+        payload = {
+            "messages": [
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            "model": GROQ_MODEL,
+            "temperature": 0.1,
+            "max_tokens": len(descriptions) * 10
+        }
+        
+        response = requests.post(
+            f"{GROQ_API_BASE_URL}/chat/completions",
+            headers=headers,
+            json=payload,
+            timeout=LLM_TIMEOUT_SECONDS
+        )
+        
+        if response.status_code == 200:
+            result = response.json()
+            content = result.get('choices', [{}])[0].get('message', {}).get('content', '').strip()
+            
+            # Parse scores line by line
+            lines = content.split('\n')
+            scores = {}
+            for i, line in enumerate(lines):
+                if i < len(descriptions):
+                    try:
+                        score = float(line.strip())
+                        scores[descriptions[i]] = max(0.0, min(1.0, score))
+                    except ValueError:
+                        continue
+            
+            return scores
+        
+        return {}
+        
+    except Exception:
+        return {}
 
 # ---------------------------
 # Local TSP heuristics (no external API)
@@ -153,7 +250,7 @@ def time_urgency(created_iso: Optional[str]) -> float:
     age_h = hours_since(parse_dt(created_iso))
     return float(np.clip(math.log1p(age_h) / math.log1p(72.0), 0.0, 1.0))
 
-def text_urgency(desc: Optional[str]) -> float:
+def keyword_text_urgency(desc: Optional[str]) -> float:
     """Keyword-based urgency (0..1)."""
     if not desc:
         return 0.0
@@ -164,24 +261,50 @@ def text_urgency(desc: Optional[str]) -> float:
             score += wgt
     return float(np.clip(score, 0.0, 1.0))
 
-def calculate_urgency_metrics(rep: Report, org: Organizer) -> Dict[str, float]:
-    """Multi-factor urgency scoring."""
-    dist_km = haversine_km(rep.lat, rep.lng, org.lat, org.lng)
-    t_urg = time_urgency(rep.createdAt)
-    x_urg = text_urgency(rep.description)
-    urgency_score = (
-        WEIGHTS["time"] * t_urg +
-        WEIGHTS["text"] * x_urg +
-        WEIGHTS["distance"] * (1.0 / (1.0 + dist_km * 0.1))  # closer = higher
-    )
-    return {
-        "distance_km": float(dist_km),
-        "time_urg": float(t_urg),
-        "text_urg": float(x_urg),
-        "urgency_score": float(urgency_score),
-        "user_lat": float(rep.lat),
-        "user_lng": float(rep.lng)
-    }
+def text_urgency_batch(reports: List[Report]) -> Dict[str, float]:
+    """
+    Batch process text urgency for all reports at once.
+    Returns dict mapping description to urgency score.
+    """
+    if not reports:
+        return {}
+    
+    # Get all unique descriptions
+    descriptions = []
+    desc_to_reports = {}
+    for rep in reports:
+        desc = rep.description or ""
+        if desc and desc not in desc_to_reports:
+            descriptions.append(desc)
+            desc_to_reports[desc] = []
+        if desc:
+            desc_to_reports[desc].append(rep)
+    
+    # Calculate keyword scores for all
+    keyword_scores = {desc: keyword_text_urgency(desc) for desc in descriptions}
+    
+    # Try batch LLM scoring
+    try:
+        llm_scores = get_batch_groq_urgency_scores(descriptions)
+        if llm_scores:
+            print(f"[DEBUG] Groq API used — received {len(llm_scores)} scores", file=sys.stderr)
+        else:
+            print("[DEBUG] Groq API NOT used — falling back to keywords", file=sys.stderr)
+        
+        final_scores = {}
+        for desc in descriptions:
+            keyword_score = keyword_scores[desc]
+            if desc in llm_scores:
+                # hybrid: 70% LLM + 30% keywords
+                hybrid_score = LLM_WEIGHT * llm_scores[desc] + (1 - LLM_WEIGHT) * keyword_score
+                final_scores[desc] = float(np.clip(hybrid_score, 0.0, 1.0))
+            else:
+                final_scores[desc] = keyword_score
+        
+        return final_scores
+        
+    except Exception:
+        return keyword_scores
 
 # ---------------------------
 # Core selection + routing
@@ -211,25 +334,45 @@ def select_top_urgent_reports(
             }
         }
 
-    # Score and keep only those within working radius
+    text_urgency_cache = text_urgency_batch(reports)
+
     enhanced_reports = []
     for rep in reports:
-        metrics = calculate_urgency_metrics(rep, organizer)
-        if metrics["distance_km"] <= working_radius_km:
+        dist_km = haversine_km(rep.lat, rep.lng, organizer.lat, organizer.lng)
+        
+        if dist_km <= working_radius_km:
+            t_urg = time_urgency(rep.createdAt)
+            
+            # Get cached text urgency
+            desc = rep.description or ""
+            x_urg = text_urgency_cache.get(desc, 0.0)
+            
+            # Calculate final urgency score using pre-calculated distance
+            distance_factor = 1.0 / (1.0 + dist_km * 0.1)
+            urgency_score = (
+                WEIGHTS["time"] * t_urg +
+                WEIGHTS["text"] * x_urg +
+                WEIGHTS["distance"] * distance_factor
+            )
+            
             enhanced_report = {
                 "_id": rep._id,
                 "lat": rep.lat,
                 "lng": rep.lng,
-                "description": rep.description or "",
+                "description": desc,
                 "createdAt": rep.createdAt,
-                **metrics
+                "distance_km": float(dist_km),
+                "time_urg": float(t_urg),
+                "text_urg": float(x_urg),
+                "urgency_score": float(urgency_score),
+                "user_lat": float(rep.lat),
+                "user_lng": float(rep.lng)
             }
             enhanced_reports.append(enhanced_report)
 
-    # Rank by urgency
+    # sort by urgency score
     enhanced_reports.sort(key=lambda x: x["urgency_score"], reverse=True)
 
-    # Select top-K
     selected_reports = enhanced_reports[:max_reports]
 
     # Optimize stop order (NN + 2-opt)
@@ -242,7 +385,7 @@ def select_top_urgent_reports(
         "selected_reports": optimized_reports,
         "google_maps_url": google_maps_url,
         "estimated_route_km": round(float(estimated_km), 3),
-        "total_reports": len(enhanced_reports),  # reports within radius
+        "total_reports": len(enhanced_reports),
         "organizer_location": {"lat": float(organizer.lat), "lng": float(organizer.lng)},
         "filtering_stats": {
             "working_radius_km": float(working_radius_km),

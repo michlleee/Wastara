@@ -63,7 +63,7 @@ const UserDashboard = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="min-h-screen bg-gray-600 relative overflow-hidden">
+    <div className="min-h-screen bg-gray-300 relative overflow-hidden">
       <div className="flex min-h-screen relative z-10">
         <div className="flex-shrink-0">
           <Sidebar />
