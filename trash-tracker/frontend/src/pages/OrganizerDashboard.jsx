@@ -1,4 +1,3 @@
-import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import LeafletMap from "../components/LeafletMap";
@@ -15,8 +14,9 @@ function OrganizerDashboard() {
     lat: null,
     lon: null,
   });
-  const [pickupPoint, setPickupPoint] = useState(0);
-  const [kilometer, setKilometer] = useState(0);
+  const [pickupPoint, setPickupPoint] = useState("");
+  const [kilometer, setKilometer] = useState("");
+  const [refreshPickups, setRefreshPickups] = useState(false);
 
   const triggerLocationRequest = () => {
     navigator.geolocation.getCurrentPosition(
@@ -46,12 +46,13 @@ function OrganizerDashboard() {
         {
           lat: lat,
           lng: lon,
-          k: pickupPoint,
-          radiusKm: kilometer,
+          k: Number(pickupPoint),
+          radiusKm: Number(kilometer),
         },
         { withCredentials: true }
       );
       console.log("Cluster result:", res.data);
+      setRefreshPickups((prev) => !prev);
     } catch (err) {
       console.error("Error fetching clusters:", err);
     }
@@ -95,7 +96,6 @@ function OrganizerDashboard() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
             <div className="lg:col-span-3">
               <div className="bg-white rounded-3xl shadow-xl border border-gray-200 p-6 relative overflow-hidden h-full flex flex-col">
                 <h1 className="text-[32px] leading-none font-extrabold text-[#243a22] tracking-tight">
@@ -113,6 +113,7 @@ function OrganizerDashboard() {
                       className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-800 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition"
                       type="number"
                       name="kilometer"
+                      value={kilometer}
                       placeholder="Minimum distance is 15km"
                       onChange={(e) => {
                         const val = Number(e.target.value);
@@ -129,6 +130,7 @@ function OrganizerDashboard() {
                       className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-800 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition"
                       type="number"
                       name="pickupPoints"
+                      value={pickupPoint}
                       placeholder="Minimum 5, Maximum 30"
                       onChange={(e) => {
                         const val = Number(e.target.value);
@@ -151,7 +153,8 @@ function OrganizerDashboard() {
                     </button>
 
                     <p className="text-sm text-gray-600 mt-2">
-                      Please allow location access so we can pinpoint where your trash is.
+                      Please allow location access so we can pinpoint where your
+                      trash is.
                     </p>
 
                     {!button ? (
@@ -175,16 +178,22 @@ function OrganizerDashboard() {
                 {/* Primary CTA */}
                 <button
                   type="button"
-                  onClick={handleGetClusters}
+                  onClick={() => {
+                    handleGetClusters();
+                    setPickupPoint("");
+                    setKilometer("");
+                  }}
                   className="mt-7 w-full bg-[#d06631] hover:bg-[#c05b28] text-white font-semibold py-4 rounded-2xl shadow-lg transition"
                 >
                   Request Nearby Trash
                 </button>
               </div>
             </div>
-
           </div>
-          <AssignedPickups organizerId={organizerData._id} />
+          <AssignedPickups
+            organizerId={organizerData._id}
+            refreshTrigger={refreshPickups}
+          />
         </div>
       </div>
     </div>

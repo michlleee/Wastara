@@ -5,6 +5,7 @@ import { spawn } from "child_process";
 import path from "path";
 import { fileURLToPath } from "url";
 import haversine from "haversine-distance";
+import Cluster from "../models/Cluster.js";
 
 const MAX_DISTANCE_METERS = 500;
 
@@ -115,31 +116,38 @@ router.post(
         const lastLoc = { latitude: anyLoc[1], longitude: anyLoc[0] };
         const distance = haversine(currentLoc, lastLoc);
 
+        const remainingSlots = Math.max(
+          0,
+          topK - validUnfinishedReports.length
+        );
         if (distance <= MAX_DISTANCE_METERS) {
+          let selectedReports = [...validUnfinishedReports];
           //Still nearby → merge unfinished with any new unassigned in the area
-          const nearbyNewReports = await Report.find({
-            assignedOrganizerId: { $exists: false },
-            status: "pending",
-            location: {
-              $geoWithin: {
-                $centerSphere: [[lng, lat], workingRadiusKm / 6378.1],
+
+          if (remainingSlots > 0) {
+            const nearbyNewReports = await Report.find({
+              assignedOrganizerId: { $exists: false },
+              status: "pending",
+              location: {
+                $geoWithin: {
+                  $centerSphere: [[lng, lat], workingRadiusKm / 6378.1],
+                },
               },
-            },
-          }).lean();
+            }).lean();
+            const validNearbyNewReports = filterValidReports(nearbyNewReports);
+            selectedReports = [
+              ...validUnfinishedReports,
+              ...validNearbyNewReports,
+            ];
+          }
 
-          const validNearbyNewReports = filterValidReports(nearbyNewReports);
-          const combinedReports = [
-            ...validUnfinishedReports,
-            ...validNearbyNewReports,
-          ];
-
-          if (combinedReports.length > 0) {
+          if (selectedReports.length > 0) {
             // Let AI pick the best cluster from combined
             const payload = {
               organizer: { lat: Number(lat), lng: Number(lng) },
               radius_km: Number(workingRadiusKm),
               top_k: Number(topK),
-              reports: combinedReports.map((r) => ({
+              reports: selectedReports.map((r) => ({
                 _id: r._id.toString(),
                 lat: Number(r.location.coordinates[1]),
                 lng: Number(r.location.coordinates[0]),
@@ -154,6 +162,32 @@ router.post(
               result
             );
             const idsToAssign = result.selected_reports.map((r) => r._id);
+            const gmapsUrl = result.google_maps_url;
+
+            //update for reports that are now excluded/unassigned
+            const currentAssignedReports = await Report.find({
+              assignedOrganizerId: organizerId,
+              status: { $in: ["in-progress"] },
+            }).lean();
+
+            const currentAssignedIds = currentAssignedReports.map((r) =>
+              r._id.toString()
+            );
+
+            const toUnassign = currentAssignedIds.filter(
+              (id) => !idsToAssign.includes(id)
+            );
+
+            if (toUnassign.length > 0) {
+              await Report.updateMany(
+                { _id: { $in: toUnassign } },
+                {
+                  $unset: { assignedOrganizerId: "" },
+                  $set: { status: "pending" },
+                }
+              );
+              console.log(`Unassigned ${toUnassign.length} old reports`);
+            }
 
             await Report.updateMany(
               { _id: { $in: idsToAssign } },
@@ -162,6 +196,13 @@ router.post(
                   assignedOrganizerId: organizerId,
                   status: "in-progress",
                 },
+              }
+            );
+
+            await Cluster.updateOne(
+              { organizerId, isActive: true },
+              {
+                $set: { gmapsUrl: gmapsUrl, reportIds: idsToAssign },
               }
             );
 
@@ -174,9 +215,10 @@ router.post(
           }
         } else {
           // Moved far away → unassign old unfinished
+          const oldUnfinishedIds = validUnfinishedReports.map((r) => r._id);
           await Report.updateMany(
             {
-              _id: { $in: validUnfinishedReports.map((r) => r._id) },
+              _id: { $in: oldUnfinishedIds },
               status: { $in: ["in-progress"] },
             },
             {
@@ -184,6 +226,91 @@ router.post(
               $set: { status: "pending" },
             }
           );
+
+          await Cluster.updateOne(
+            { organizerId, isActive: true },
+            { $pull: { reportIds: { $in: oldUnfinishedIds } } }
+          );
+
+          // Find new nearby reports
+          const nearbyReports = await Report.find({
+            status: "pending",
+            assignedOrganizerId: { $exists: false },
+            location: {
+              $geoWithin: {
+                $centerSphere: [[lng, lat], HARD_MAX_KM / 6378.1],
+              },
+            },
+          }).lean();
+
+          const validNearbyReports = filterValidReports(nearbyReports);
+
+          if (validNearbyReports.length) {
+            const payload = {
+              organizer: { lat: Number(lat), lng: Number(lng) },
+              radius_km: Number(workingRadiusKm),
+              top_k: Number(topK),
+              reports: validNearbyReports.map((r) => ({
+                _id: r._id.toString(),
+                lat: Number(r.location.coordinates[1]),
+                lng: Number(r.location.coordinates[0]),
+                description: r.placeDescription || "",
+                createdAt: r.createdAt ? r.createdAt.toISOString() : null,
+              })),
+            };
+
+            const result = await runRank(payload);
+            const idsToAssign = result.selected_reports.map((r) => r._id);
+            const gmapsUrl = result.google_maps_url;
+
+            await Report.updateMany(
+              { _id: { $in: idsToAssign } },
+              {
+                $set: {
+                  assignedOrganizerId: organizerId,
+                  status: "in-progress",
+                },
+              }
+            );
+
+            const cluster = await Cluster.findOne({
+              organizerId,
+              isActive: true,
+            });
+
+            if (cluster) {
+              await Cluster.updateOne(
+                { _id: cluster._id },
+                {
+                  $push: { reportIds: { $each: idsToAssign } },
+                  $set: { gmapsUrl },
+                }
+              );
+            } else {
+              await Cluster.create({
+                organizerId,
+                reportIds: idsToAssign,
+                gmapsUrl,
+                isActive: true,
+              });
+            }
+
+            return res.json({
+              message: "Organizer moved but got new nearby reports assigned",
+              unassigned_count: oldUnfinishedIds.length,
+              assigned_count: idsToAssign.length,
+              assigned_reports: idsToAssign,
+              gmapsUrl,
+            });
+          }
+
+          return res.json({
+            message:
+              "Old unfinished reports unassigned due to organizer moving away, no new reports nearby",
+            unassigned_count: oldUnfinishedIds.length,
+            assigned_count: 0,
+            assigned_reports: [],
+          });
         }
       }
 
@@ -227,20 +354,59 @@ router.post(
       //   JSON.stringify(payload, null, 2)
       // );
 
-      const result = await runRank(payload);
-      console.log("newly unassigned reports:", result);
-      const idsToAssign = result.selected_reports.map((r) => r._id);
+      const rankingResult = await runRank(payload);
+      console.log("Ranked result from AI:", rankingResult);
+
+      const idsToAssign = rankingResult.selected_reports.map((r) => r._id);
+      const gmapsUrl = rankingResult.google_maps_url;
+
       await Report.updateMany(
         { _id: { $in: idsToAssign } },
         { $set: { assignedOrganizerId: organizerId, status: "in-progress" } }
       );
 
-      return res.status(200).json({
-        message: "New cluster assigned via AI",
-        assigned_count: idsToAssign.length,
+      let existingCluster = await Cluster.findOne({
         organizerId,
-        selected_reports: result.selected_reports,
+        isActive: true,
       });
+
+      if (existingCluster) {
+        const updatedReportIds = [
+          ...new Set([
+            ...existingCluster.reportIds,
+            ...idsToAssign.map((id) => id.toString()),
+          ]),
+        ];
+
+        await Cluster.updateOne(
+          { _id: existingCluster._id },
+          {
+            $set: {
+              reportIds: updatedReportIds,
+              gmapsUrl,
+            },
+          }
+        );
+
+        return res.status(200).json({
+          message: "Cluster updated with new reports",
+          assigned_count: idsToAssign.length,
+          organizerId,
+        });
+      } else {
+        await Cluster.create({
+          organizerId,
+          reportIds: idsToAssign.map((id) => id.toString()),
+          gmapsUrl: gmapsUrl,
+          isActive: true,
+        });
+
+        return res.status(200).json({
+          message: "New cluster assigned via AI",
+          assigned_count: idsToAssign.length,
+          organizerId,
+        });
+      }
     } catch (e) {
       console.error("Urgent ranking error:", e);
       return res.status(500).json({ error: e.message });

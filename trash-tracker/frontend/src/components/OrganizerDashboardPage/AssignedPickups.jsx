@@ -2,28 +2,26 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Package, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
-import PickupRequestCard from "../DashboardPage/PickupRequestCard.jsx";
+import ActivePickupCard from "./ActivePickupCard.jsx";
 
-const OrganizerActivePickups = ({ organizerId }) => {
+const AssignedPickups = ({ organizerId, refreshTrigger }) => {
   const [reports, setReports] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [cluster, setCluster] = useState({
+    id: "",
+    gmapsUrl: "",
+    reportIds: [],
+  });
 
   const getExistingReports = async () => {
     try {
-      const { data } = await axios.get(
+      const result = await axios.get(
         "http://localhost:3000/api/organizer-dashboard/reports",
         { withCredentials: true }
       );
-      console.log(data);
 
-      const all = Array.isArray(data) ? data : [];
-      const mine = all.filter(
-        (r) =>
-          r?.assignedOrganizerId &&
-          String(r.assignedOrganizerId) === String(organizerId)
-      );
-
-      setReports(mine);
+      setReports(result.data.report || []);
+      setCluster(result.data.cluster || null);
     } catch (error) {
       console.log(error);
       setReports([]);
@@ -40,9 +38,10 @@ const OrganizerActivePickups = ({ organizerId }) => {
         { reportId },
         { withCredentials: true }
       );
-      if (res.data?.message?.toLowerCase()?.includes("deleted")) {
+      if (res.data.success) {
         toast.success("Pickup request cancelled.");
         setIsLoading(true);
+        setCluster(res.data.cluster);
         await getExistingReports();
       } else {
         toast.error("Cancellation failed.");
@@ -53,11 +52,32 @@ const OrganizerActivePickups = ({ organizerId }) => {
     }
   };
 
+  const handleFinish = async (reportId, userId) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:3000/api/organizer-dashboard/finish",
+        { reportId: reportId, userId: userId },
+        { withCredentials: true }
+      );
+
+      if (res.data.success) {
+        toast.success(res.data.message || "Pickup request finished!");
+      } else {
+        toast.error(res.data.message || "Failed to finish pickup request.");
+      }
+      setIsLoading(true);
+      setCluster(res.data.cluster);
+      await getExistingReports();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     if (!organizerId) return;
     setIsLoading(true);
     getExistingReports();
-  }, [organizerId]);
+  }, [organizerId, refreshTrigger]);
 
   const hasData = reports.length > 0;
 
@@ -71,7 +91,14 @@ const OrganizerActivePickups = ({ organizerId }) => {
           Organizer Active Pickups
         </h3>
       </div>
-
+      {cluster?.reportIds?.length > 0 && (
+        <p>
+          gmpas url:{" "}
+          <a href={cluster.gmapsUrl} target="_blank" rel="noopener noreferrer">
+            gmaps
+          </a>
+        </p>
+      )}
       <div className="py-2 space-y-3 sm:space-y-4 overflow-y-auto pr-1 sm:pr-2 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-transparent flex-1">
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
@@ -79,16 +106,17 @@ const OrganizerActivePickups = ({ organizerId }) => {
           </div>
         ) : hasData ? (
           reports.map((report, index) => (
-            <PickupRequestCard
+            <ActivePickupCard
               key={report._id || index}
               status={report.status}
               reportId={report._id}
+              userId={report.userId}
               index={index}
               date={new Date(report.createdAt).toLocaleString()}
               trashDescription={report.trashDescription}
               placeDescription={report.placeDescription}
-              showButton={report.status !== "in-progress"}
               onCancel={handleCancel}
+              onFinish={handleFinish}
             />
           ))
         ) : (
@@ -96,7 +124,9 @@ const OrganizerActivePickups = ({ organizerId }) => {
             <div className="p-4 bg-slate-100 rounded-full mb-4">
               <Package className="w-8 h-8 text-slate-400" />
             </div>
-            <p className="text-slate-600 font-medium">No pickups assigned to you.</p>
+            <p className="text-slate-600 font-medium">
+              No pickups assigned to you.
+            </p>
             <p className="text-slate-400 text-sm mt-1">
               Pickups where you are the assigned organizer will appear here.
             </p>
@@ -107,4 +137,4 @@ const OrganizerActivePickups = ({ organizerId }) => {
   );
 };
 
-export default OrganizerActivePickups;
+export default AssignedPickups;
