@@ -34,8 +34,21 @@ const UserProfileCard = ({ name }) => {
 
   return (
     <div className="relative overflow-hidden rounded-lg shadow-lg/30 bg-white w-full mb-6">
-      <div className="bg-gradient-to-br from-[#192e1d] to-[#374233] text-white p-4 ">
-        <div className="flex justify-between items-end ml-2">
+      {/* Top Greeting Section */}
+      <div className="relative bg-gradient-to-br from-[#213b26] to-[#283025] text-white p-4">
+        {/* Grid Overlay ONLY for this section */}
+        <div className="absolute inset-0 opacity-60 z-0 pointer-events-none">
+          <div
+            className="w-full h-full"
+            style={{
+              backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+                                linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
+              backgroundSize: "24px 24px",
+            }}
+          ></div>
+        </div>
+
+        <div className="relative flex justify-between items-end ml-2 z-10">
           <div>
             <h2 className="text-lg sm:text-3xl font-bold mb-1">Hello,</h2>
             <h2 className="text-lg sm:text-3xl font-bold mb-1">{name}!</h2>
@@ -68,24 +81,12 @@ const UserProfileCard = ({ name }) => {
         Report now or later ....
       </div>
 
-      {/* Location Footer (White Bar Full Width) */}
+      {/* Location Footer */}
       <div className="bg-white px-8 py-4 flex items-center text-black">
         <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
           <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22S19 14.25 19 9C19 5.13 15.87 2 12 2M12 11.5C10.62 11.5 9.5 10.38 9.5 9S10.62 6.5 12 6.5 14.5 7.62 14.5 9 13.38 11.5 12 11.5Z" />
         </svg>
         Tangerang, Banten
-      </div>
-
-      {/* Grid Overlay */}
-      <div className="absolute inset-0 opacity-60 z-0 pointer-events-none">
-        <div
-          className="w-full h-full"
-          style={{
-            backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-            backgroundSize: "24px 24px",
-          }}
-        ></div>
       </div>
     </div>
   );

@@ -2,9 +2,11 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import LeafletMap from "../components/LeafletMap";
+import Sidebar from "../components/DashboardPage/Sidebar";
+import OrganizerProfileCard from "../components/DashboardPage/OrganizerProfileCard";
+import AssignedPickups from "../components/OrganizerDashboardPage/AssignedPickups";
 
 function OrganizerDashboard() {
-  const { mongoId } = useParams();
   const [organizerData, setOrganizerData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -81,77 +83,110 @@ function OrganizerDashboard() {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div>
-      <h2>Organizer Dashboard</h2>
-      <p>Mongo ID (from URL): {mongoId}</p>
-      <p>Name: {organizerData.name}</p>
-      <p>Email: {organizerData.email}</p>
-      <p>Role: {organizerData.role}</p>
-      <p>pickup count: {organizerData.pickupCount}</p>
+    <div className="min-h-screen bg-gray-300 relative overflow-hidden">
+      <div className="flex min-h-screen relative z-10">
+        <div className="flex-shrink-0">
+          <Sidebar />
+        </div>
 
-      <div>
-        <p>input how many kilos u want:</p>
-        <input
-          className="w-2xl border-amber-600 border-2"
-          type="number"
-          name="kilometer"
-          placeholder="e.g. 2 kilometer from your location.."
-          onChange={(e) => {
-            const val = Number(e.target.value);
-            if (val >= 0) setKilometer(val);
-          }}
-        />
-
-        <p>How many trash pickup points do you want?</p>
-        <input
-          className="w-2xl border-amber-600 border-2"
-          type="number"
-          name="pickupPoints"
-          placeholder="e.g. 20 pickup points within my chosen radius.."
-          onChange={(e) => {
-            const val = Number(e.target.value);
-            if (val >= 0) setPickupPoint(val);
-          }}
-        />
-      </div>
-      <div>
-        <label className="block text-lg font-semibold text-green-900 mb-2">
-          Choose Trash Location
-        </label>
-        <button
-          type="button"
-          onClick={triggerLocationRequest}
-          className="bg-gradient-to-r from-amber-300 to-amber-400 hover:from-amber-400 hover:to-amber-500 transition px-5 py-2 rounded-lg text-amber-900 font-medium shadow-lg"
-        >
-          Turn on Location
-        </button>
-        <p className="text-sm text-gray-600 mt-2">
-          Please allow location access so we can pinpoint where your trash is.
-        </p>
-        {!button ? (
-          <p className="mt-4 text-gray-500 italic">
-            Map not available. Location not found.
-          </p>
-        ) : (
-          <div className="h-52 mt-4 rounded-xl overflow-hidden border border-green-300 shadow">
-            <LeafletMap
-              longitude={location.lon}
-              latitude={location.lat}
-              onLocationChange={(lat, lng) =>
-                setLocation({ lat: lat, lon: lng })
-              }
-            />
+        <div className="flex-1 p-8 space-y-6 md:ml-18 pt-16 md:pt-4">
+          <div className="space-y-6">
+            <OrganizerProfileCard name={organizerData.name} />
           </div>
-        )}
-      </div>
 
-      <button
-        type="button"
-        onClick={handleGetClusters}
-        className="bg-[#93B088] text-white px-6 py-3 rounded-xl font-medium hover:bg-[#7a9671] transition-colors"
-      >
-        Get Clusters
-      </button>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <div className="lg:col-span-3">
+              <div className="bg-white rounded-3xl shadow-xl border border-gray-200 p-6 relative overflow-hidden h-full flex flex-col">
+                <h1 className="text-[32px] leading-none font-extrabold text-[#243a22] tracking-tight">
+                  Get Nearby Trash
+                </h1>
+                <hr className="mt-4 mb-6 border-t-2 border-[#3a493a]" />
+
+                {/* --- FORM --- */}
+                <div className="space-y-6 flex-1">
+                  <div>
+                    <label className="block text-lg font-semibold text-[#243a22] mb-2">
+                      Maximum Distance
+                    </label>
+                    <input
+                      className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-800 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition"
+                      type="number"
+                      name="kilometer"
+                      placeholder="Minimum distance is 15km"
+                      onChange={(e) => {
+                        const val = Number(e.target.value);
+                        if (val >= 0) setKilometer(val);
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-lg font-semibold text-[#243a22] mb-2">
+                      Maximum Trash
+                    </label>
+                    <input
+                      className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-800 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition"
+                      type="number"
+                      name="pickupPoints"
+                      placeholder="Minimum 5, Maximum 30"
+                      onChange={(e) => {
+                        const val = Number(e.target.value);
+                        if (val >= 0) setPickupPoint(val);
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-lg font-semibold text-[#243a22] mb-2">
+                      Choose Trash Location
+                    </label>
+
+                    <button
+                      type="button"
+                      onClick={triggerLocationRequest}
+                      className="bg-gradient-to-r from-amber-300 to-amber-400 hover:from-amber-400 hover:to-amber-500 transition px-5 py-2 rounded-lg text-amber-900 font-medium shadow-lg"
+                    >
+                      Turn on Location
+                    </button>
+
+                    <p className="text-sm text-gray-600 mt-2">
+                      Please allow location access so we can pinpoint where your trash is.
+                    </p>
+
+                    {!button ? (
+                      <p className="mt-4 text-gray-500 italic">
+                        Map not available. Location not found.
+                      </p>
+                    ) : (
+                      <div className="h-56 mt-4 rounded-xl overflow-hidden border border-gray-300 shadow">
+                        <LeafletMap
+                          longitude={location.lon}
+                          latitude={location.lat}
+                          onLocationChange={(lat, lng) =>
+                            setLocation({ lat: lat, lon: lng })
+                          }
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Primary CTA */}
+                <button
+                  type="button"
+                  onClick={handleGetClusters}
+                  className="mt-7 w-full bg-[#d06631] hover:bg-[#c05b28] text-white font-semibold py-4 rounded-2xl shadow-lg transition"
+                >
+                  Request Nearby Trash
+                </button>
+              </div>
+            </div>
+
+          </div>
+          <AssignedPickups organizerId={organizerData._id} />
+        </div>
+      </div>
     </div>
   );
 }

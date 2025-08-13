@@ -70,14 +70,6 @@ const Sidebar = () => {
           </button>
         )}
 
-        {/* Subtle animated background pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-2 w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-          <div className="absolute top-32 right-3 w-1 h-1 bg-emerald-300 rounded-full animate-ping"></div>
-          <div className="absolute bottom-20 left-3 w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse delay-1000"></div>
-          <div className="absolute top-1/2 left-1 w-1 h-1 bg-emerald-400 rounded-full animate-bounce delay-500"></div>
-        </div>
-
         {/* Top section */}
         <div className="flex flex-col space-y-8 items-center relative z-10">
           <div className="group cursor-pointer relative">
