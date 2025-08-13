@@ -1,14 +1,12 @@
-"use client"
-
-import { useState } from "react"
-import SidebarIcon from "./SidebarIcon"
+import { useState } from "react";
+import SidebarIcon from "./SidebarIcon";
 
 const Sidebar = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen)
-  }
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
 
   return (
     <>
@@ -28,15 +26,20 @@ const Sidebar = () => {
 
       {/* Mobile Overlay */}
       {isMobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 bg-black/50 z-[50]" onClick={toggleMobileMenu}></div>
+        <div
+          className="md:hidden fixed inset-0 bg-black/50 z-[50]"
+          onClick={toggleMobileMenu}
+        ></div>
       )}
 
       <div
         className={`
         flex flex-col w-20 bg-gradient-to-b from-black via-gray-900 to-black p-4 items-center h-screen justify-between shadow-2xl border-r border-gray-800/50 backdrop-blur-sm relative overflow-hidden
-        fixed left-0 top-0 z-[55] 
+        left-0 top-0 z-[55] 
         transition-transform duration-300 ease-in-out
-        ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0
+        ${
+          isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0
       `}
         style={{
           position: "fixed",
@@ -51,8 +54,18 @@ const Sidebar = () => {
             onClick={toggleMobileMenu}
             className="md:hidden absolute top-4 right-4 z-10 w-8 h-8 bg-gray-800 hover:bg-gray-700 rounded-lg flex items-center justify-center shadow-lg border border-gray-600 transition-colors duration-200"
           >
-            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg
+              className="w-5 h-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         )}
@@ -86,18 +99,18 @@ const Sidebar = () => {
               label="Report"
               icon={
                 <svg
-                className="w-6 h-6 text-white group-hover:text-emerald-400 transition-colors duration-300"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-                strokeLinecap="round"
-                strokeLinejoin="round"
+                  className="w-6 h-6 text-white group-hover:text-emerald-400 transition-colors duration-300"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 >
-                <path d="M3 6h18" />
-                <path d="M8 6V4h8v2" />
-                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                <path d="M12 10c0-2 1.5-3.5 3.5-3.5S19 8 19 10c0 2.5-3.5 6-3.5 6s-3.5-3.5-3.5-6z" />
+                  <path d="M3 6h18" />
+                  <path d="M8 6V4h8v2" />
+                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                  <path d="M12 10c0-2 1.5-3.5 3.5-3.5S19 8 19 10c0 2.5-3.5 6-3.5 6s-3.5-3.5-3.5-6z" />
                 </svg>
               }
             />
@@ -105,16 +118,16 @@ const Sidebar = () => {
               label="History"
               icon={
                 <svg
-                className="w-6 h-6 text-white group-hover:text-emerald-400 transition-colors duration-300"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-                strokeLinecap="round"
-                strokeLinejoin="round"
+                  className="w-6 h-6 text-white group-hover:text-emerald-400 transition-colors duration-300"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 >
-                <circle cx="12" cy="12" r="9" />
-                <path d="M12 7v5l3 2" />
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 7v5l3 2" />
                 </svg>
               }
             />
@@ -138,7 +151,7 @@ const Sidebar = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default Sidebar
+export default Sidebar;

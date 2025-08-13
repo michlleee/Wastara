@@ -34,8 +34,7 @@ const UserProfileCard = ({ name }) => {
 
   return (
     <div className="relative overflow-hidden rounded-lg shadow-lg/30 bg-white w-full mb-6">
-      {/* Top Background with Gradient */}
-      <div className="bg-gradient-to-br from-[#2d5033] to-[#4f9259] text-white p-4 ">
+      <div className="bg-gradient-to-br from-[#192e1d] to-[#374233] text-white p-4 ">
         <div className="flex justify-between items-end ml-2">
           <div>
             <h2 className="text-lg sm:text-3xl font-bold mb-1">Hello,</h2>
