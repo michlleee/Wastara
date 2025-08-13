@@ -22,9 +22,12 @@ function OurFeatures() {
   return (
     <div className="w-full py-20 bg-[#141414] text-white">
       <div className="max-w-7xl mx-auto px-4">
-        <h2 className="text-left text-4xl font-bold text-[#88A47C] mb-12">
-          Our Features
-        </h2>
+        <div className="text-center mb-12 sm:mb-16">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-transparent bg-gradient-to-r from-[#88A47C] to-[#a8c49c] bg-clip-text mb-4 animate-fade-in">
+            Our Features
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-[#88A47C] to-[#a8c49c] mx-auto rounded-full"></div>
+        </div>
 
         <FeatureItem
           number={"1"}

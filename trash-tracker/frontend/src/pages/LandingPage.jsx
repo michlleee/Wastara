@@ -1,22 +1,27 @@
-import landingBg from "../assets/bg_landing_page.png";
-import Navbar from "../components/LandingPage/Navbar";
-import Footer from "../components/LandingPage/Footer";
-import HeroSection from "../components/LandingPage/HeroSection";
-import AboutUsCard from "../components/LandingPage/AboutUsCard";
-import ProblemSection from "../components/LandingPage/ProblemSection";
-import HowTo from "../components/LandingPage/HowTo";
-import BlackBackground from "../components/LandingPage/BlackBackground";
+import landingBg from "../assets/bg_landing_page.png"
+import Navbar from "../components/LandingPage/Navbar"
+import Footer from "../components/LandingPage/Footer"
+import HeroSection from "../components/LandingPage/HeroSection"
+import AboutUsCard from "../components/LandingPage/AboutUsCard"
+import ProblemSection from "../components/LandingPage/ProblemSection"
+import VisionMission from "../components/LandingPage/VisionMission"
+import OurFeatures from "../components/LandingPage/OurFeatures"
 
 const LandingPage = () => {
   return (
-    <>
+    <div
+      className="select-none"
+      onDragStart={(e) => e.preventDefault()}
+      style={{ WebkitTouchCallout: "none" }}
+    >
+      <Navbar className="fixed top-0 w-full z-50" />
+
       <div
+        id="hero-section"
         className="relative min-h-screen bg-cover bg-center"
         style={{ backgroundImage: `url(${landingBg})` }}
       >
-        <div className="relative z-20 flex flex-col min-h-screen">
-          <Navbar />
-
+        <div className="relative z-10 flex flex-col min-h-screen">
           <HeroSection />
 
           <div className="relative w-full h-20 z-10">
@@ -27,7 +32,6 @@ const LandingPage = () => {
                 clipPath: "polygon(0% 60%, 100% 0%, 100% 40%, 0% 100%)",
               }}
             ></div>
-
             <div
               className="absolute top-0 left-0 w-full h-full bg-white"
               style={{
@@ -38,13 +42,13 @@ const LandingPage = () => {
         </div>
       </div>
 
-      <div className="relative z-20 bg-white">
+      <section id="about" className="relative z-10 bg-white scroll-mt-24">
         <AboutUsCard />
-      </div>
+      </section>
 
-      <div className="relative z-20 bg-white">
+      <section id="problems" className="relative z-10 bg-white scroll-mt-24">
         <ProblemSection />
-      </div>
+      </section>
 
       <div className="relative w-full h-20">
         <div
@@ -54,7 +58,6 @@ const LandingPage = () => {
             clipPath: "polygon(0% 0%, 100% 60%, 100% 100%, 0% 40%)",
           }}
         ></div>
-
         <div
           className="absolute top-0 left-0 w-full h-full z-10 bg-[#141414]"
           style={{
@@ -63,27 +66,18 @@ const LandingPage = () => {
         ></div>
       </div>
 
-      <BlackBackground />
-
-      <div className="relative w-full h-24 overflow-hidden z-10">
-        <div
-          className="absolute top-0 left-0 w-full h-full"
-          style={{
-            backgroundColor: "#6D9D58",
-            clipPath: "polygon(0% 0%, 100% 0%, 100% 30%, 0% 100%)",
-          }}
-        ></div>
-        <div
-          className="absolute top-0 left-0 w-full h-full bg-[#141414]"
-          style={{
-            clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 70%)",
-          }}
-        ></div>
+      <div className="bg-[#141414]">
+        <section id="vision" className="scroll-mt-24">
+          <VisionMission />
+        </section>
+        <section id="features" className="scroll-mt-24">
+          <OurFeatures />
+        </section>
       </div>
-      
-      <Footer />
-    </>
-  );
-};
 
-export default LandingPage;
+      <Footer />
+    </div>
+  )
+}
+
+export default LandingPage

@@ -4,7 +4,7 @@ export default function FeatureItem({ imageOnLeft, text, imageSrc, featureName, 
       {imageOnLeft && (
         <div className="relative overflow-hidden rounded-xl md:rounded-2xl shadow-lg md:shadow-xl transition-all duration-500 group-hover:shadow-xl md:group-hover:shadow-2xl group-hover:-translate-y-1 md:group-hover:-translate-y-2 flex-shrink-0 w-full sm:w-80 md:w-96">
           <img
-            src={imageSrc || "/placeholder.svg"}
+            src={imageSrc}
             alt="feature"
             className="w-full h-48 sm:h-56 md:h-64 lg:h-72 object-cover transition-transform duration-700 group-hover:scale-105 md:group-hover:scale-110"
           />
@@ -19,7 +19,7 @@ export default function FeatureItem({ imageOnLeft, text, imageSrc, featureName, 
           <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-xl md:rounded-2xl" />
         </div>
 
-        <h2 className="relative z-10 text-lg sm:text-xl md:text-2xl font-bold mb-2 sm:mb-3 md:mb-4 bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent transition-all duration-300 group-hover:scale-105 px-2">
+        <h2 className="relative z-10 text-lg sm:text-xl md:text-2xl font-bold mb-2 sm:mb-3 md:mb-4 bg-clip-text transition-all duration-300 group-hover:scale-105 px-2 text-[#3f5835]">
           {featureName}
         </h2>
 
