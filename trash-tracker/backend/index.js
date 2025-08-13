@@ -10,6 +10,7 @@ import MongoStore from "connect-mongo";
 import "./config/passport.js";
 import User from "./models/User.js";
 import clusterRoutes from "./routes/clusterRoutes.js";
+import organizerRouter from "./routes/organizerDashboard.js";
 
 dotenv.config();
 
@@ -49,6 +50,7 @@ app.use(passport.session());
 app.use("/api/signup", userRouter);
 app.use("/api/user-dashboard", userDashboardRouter);
 app.use("/api/cluster", clusterRoutes);
+app.use("/api/organizer-dashboard", organizerRouter);
 
 app.get("/auth/google", (req, res, next) => {
   const intent = req.query.intent;
