@@ -1,44 +1,144 @@
-import SidebarIcon from "./SidebarIcon";
+"use client"
+
+import { useState } from "react"
+import SidebarIcon from "./SidebarIcon"
 
 const Sidebar = () => {
-    return (
-        <div className="flex flex-col w-18 bg-[#1B1E1B] p-4 items-center rounded-lg h-100% justify-between">
-            
-            {/* Top section */}
-            <div className="flex flex-col space-y-6 items-center">
-                <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                    <div className="w-6 h-6 bg-black rounded-full"></div>
-                </div>
-                
-                <SidebarIcon
-                    label="Report"
-                    icon={
-                        <svg className="w-6 h-6 text-black" fill="white" viewBox="0 0 24 24">
-                            <path d="M12 2L2 7V10C2 16 6 20.9 12 22C18 20.9 22 16 22 10V7L12 2Z" />
-                        </svg>
-                    }
-                />
-                <SidebarIcon
-                    label="History"
-                    icon={
-                        <svg className="w-6 h-6 text-black" fill="white" viewBox="0 0 24 24">
-                            <path d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M12 20C7.59 20 4 16.41 4 12S7.59 4 12 4 20 7.59 20 12 16.41 20 12 20M12.5 7H11V13L16.2 16.2L17 14.9L12.5 12.2V7Z"/>
-                        </svg>
-                    }
-                />
-            </div>
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
-            {/* Bottom section */}
-            <SidebarIcon
-                label="Logout"
-                icon={
-                    <svg className="w-8 h-8 text-black" fill="white" viewBox="0 0 24 24">
-                        <path d="M12 8C9.8 8 8 9.8 8 12S9.8 16 12 16 16 14.2 16 12 14.2 8 12 8M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z"/>
-                    </svg>
-                }
-            /> 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen)
+  }
+
+  return (
+    <>
+      {/* Mobile Hamburger Button - only show when menu is closed */}
+      {!isMobileMenuOpen && (
+        <button
+          onClick={toggleMobileMenu}
+          className="md:hidden fixed top-4 left-4 z-[60] w-10 h-10 bg-black rounded-lg flex items-center justify-center shadow-lg border border-gray-700"
+        >
+          <div className="w-6 h-6 flex flex-col justify-center items-center">
+            <span className="bg-white block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm -translate-y-0.5"></span>
+            <span className="bg-white block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm my-0.5 opacity-100"></span>
+            <span className="bg-white block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm translate-y-0.5"></span>
+          </div>
+        </button>
+      )}
+
+      {/* Mobile Overlay */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden fixed inset-0 bg-black/50 z-[50]" onClick={toggleMobileMenu}></div>
+      )}
+
+      <div
+        className={`
+        flex flex-col w-20 bg-gradient-to-b from-black via-gray-900 to-black p-4 items-center h-screen justify-between shadow-2xl border-r border-gray-800/50 backdrop-blur-sm relative overflow-hidden
+        fixed left-0 top-0 z-[55] 
+        transition-transform duration-300 ease-in-out
+        ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0
+      `}
+        style={{
+          position: "fixed",
+          left: 0,
+          top: 0,
+          height: "100vh",
+          zIndex: 55,
+        }}
+      >
+        {isMobileMenuOpen && (
+          <button
+            onClick={toggleMobileMenu}
+            className="md:hidden absolute top-4 right-4 z-10 w-8 h-8 bg-gray-800 hover:bg-gray-700 rounded-lg flex items-center justify-center shadow-lg border border-gray-600 transition-colors duration-200"
+          >
+            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        )}
+
+        {/* Subtle animated background pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 left-2 w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+          <div className="absolute top-32 right-3 w-1 h-1 bg-emerald-300 rounded-full animate-ping"></div>
+          <div className="absolute bottom-20 left-3 w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse delay-1000"></div>
+          <div className="absolute top-1/2 left-1 w-1 h-1 bg-emerald-400 rounded-full animate-bounce delay-500"></div>
         </div>
-    );
-};
 
-export default Sidebar;
+        {/* Top section */}
+        <div className="flex flex-col space-y-8 items-center relative z-10">
+          <div className="group cursor-pointer relative">
+            <div className="w-14 h-14 bg-gradient-to-br from-emerald-400 via-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-xl hover:shadow-emerald-500/30 transition-all duration-500 hover:scale-110 ring-2 ring-emerald-500/30 hover:ring-emerald-400/50 hover:rotate-3">
+              <img
+                src="../../src/assets/wastara_logo_small.svg"
+                alt="Wastara Logo"
+                className="w-10 h-10 group-hover:scale-110 transition-transform duration-300"
+              />
+            </div>
+            {/* Pulsing glow effect */}
+            <div className="absolute -inset-2 bg-gradient-to-r from-emerald-600 via-emerald-400 to-emerald-600 rounded-2xl blur-lg opacity-0 group-hover:opacity-30 transition-opacity duration-500 animate-pulse"></div>
+            {/* Rotating ring */}
+            <div className="absolute -inset-1 border-2 border-emerald-400/20 rounded-2xl group-hover:border-emerald-400/40 transition-colors duration-300 group-hover:animate-spin"></div>
+          </div>
+
+          <div className="flex flex-col space-y-6 items-center">
+            <SidebarIcon
+              label="Report"
+              icon={
+                <svg
+                className="w-6 h-6 text-white group-hover:text-emerald-400 transition-colors duration-300"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                >
+                <path d="M3 6h18" />
+                <path d="M8 6V4h8v2" />
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                <path d="M12 10c0-2 1.5-3.5 3.5-3.5S19 8 19 10c0 2.5-3.5 6-3.5 6s-3.5-3.5-3.5-6z" />
+                </svg>
+              }
+            />
+            <SidebarIcon
+              label="History"
+              icon={
+                <svg
+                className="w-6 h-6 text-white group-hover:text-emerald-400 transition-colors duration-300"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                >
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 7v5l3 2" />
+                </svg>
+              }
+            />
+          </div>
+        </div>
+
+        {/* Bottom section */}
+        <div className="relative z-10">
+          <SidebarIcon
+            label="Logout"
+            icon={
+              <svg
+                className="w-6 h-6 text-red-400 group-hover:text-red-300 transition-colors duration-300"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M16 17V14H9V10H16V7L21 12L16 17M14 2C15.11 2 16 2.9 16 4V6H14V4H5V20H14V18H16V20C16 21.11 15.11 22 14 22H5C3.9 22 3 21.11 3 20V4C3 2.9 3.9 2 5 2H14Z" />
+              </svg>
+            }
+          />
+        </div>
+      </div>
+    </>
+  )
+}
+
+export default Sidebar
