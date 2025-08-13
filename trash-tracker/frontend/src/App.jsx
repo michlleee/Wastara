@@ -15,6 +15,7 @@ import UserDashboard from "./pages/UserDashboard.jsx";
 import OrganizerDashboard from "./pages/OrganizerDashboard.jsx";
 import AddReport from "./pages/AddReport.jsx";
 import LoadingScreen from "./components/LoadingScreen.jsx";
+import { Toaster } from "react-hot-toast";
 
 function LayoutWithLoader() {
   const location = useLocation();
@@ -39,6 +40,7 @@ function LayoutWithLoader() {
 function App() {
   return (
     <BrowserRouter>
+      <Toaster position="bottom-center" reverseOrder={false} />
       <Routes>
         <Route element={<LayoutWithLoader />}>
           <Route path="/" element={<LandingPage />} />

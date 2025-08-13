@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import PickupRequestCard from "./PickupRequestCard.jsx";
 import axios from "axios";
 import { Package, Loader2 } from "lucide-react";
+import toast from "react-hot-toast";
 
-const ActivePickups = () => {
+const ActivePickups = ({ getUpdatedReports }) => {
   const [reports, setReports] = useState([]);
   const [currStatus, setCurrStatus] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -19,6 +20,7 @@ const ActivePickups = () => {
       if (Array.isArray(data)) {
         setCurrStatus(true);
         setReports(data);
+        getUpdatedReports(data);
       } else if (data && typeof data.message === "string") {
         setCurrStatus(false);
         setReports([]);
@@ -34,8 +36,22 @@ const ActivePickups = () => {
     }
   };
 
-  const handleCancel = () => {
-    console.log("clicked");
+  const handleCancel = async (reportId) => {
+    try {
+      const result = await axios.post(
+        "http://localhost:3000/api/user-dashboard/cancel",
+        { reportId: reportId },
+        { withCredentials: true }
+      );
+      if (result.data.message?.toLowerCase().includes("deleted")) {
+        toast.success("Pickup request cancelled!");
+        getAllReports();
+      } else {
+        toast.error("Cancellation failed");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -63,6 +79,7 @@ const ActivePickups = () => {
             <PickupRequestCard
               key={report._id || index}
               status={report.status}
+              reportId={report._id}
               index={index}
               date={new Date(report.createdAt).toLocaleString()}
               trashDescription={report.trashDescription}

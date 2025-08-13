@@ -1,11 +1,10 @@
-"use client";
-
 import { MapPin, Trash2, Calendar, X } from "lucide-react";
 
 const PickupRequestCard = ({
   trashDescription,
   placeDescription,
   status,
+  reportId,
   index,
   date,
   showButton,
@@ -103,7 +102,9 @@ const PickupRequestCard = ({
 
       {showButton && (
         <button
-          onClick={onCancel}
+          onClick={() => {
+            onCancel(reportId);
+          }}
           className="
             group/btn
             bg-red-50

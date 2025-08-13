@@ -17,6 +17,10 @@ const UserDashboard = () => {
   const [error, setError] = useState("");
   const [reports, setReports] = useState([]);
 
+  const getUpdates = (updatedReports) => {
+    setReports(updatedReports);
+  };
+
   const getAllReports = async () => {
     try {
       const { data } = await axios.get(
@@ -118,7 +122,7 @@ const UserDashboard = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             <div className="lg:col-span-6">
-              <ActivePickups />
+              <ActivePickups getUpdatedReports={getUpdates} />
             </div>
 
             <div className="lg:col-span-3">

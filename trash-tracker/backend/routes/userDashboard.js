@@ -55,4 +55,19 @@ router.post(
   }
 );
 
+router.post("/cancel", isLoggedIn, async (req, res) => {
+  const { reportId } = req.body;
+  try {
+    const deletedReport = await Report.findByIdAndDelete(reportId);
+    if (!deletedReport) {
+      return res.status(404).json({ message: "Report not found" });
+    }
+
+    res.status(200).json({ message: "Report deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting report:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 export default router;
