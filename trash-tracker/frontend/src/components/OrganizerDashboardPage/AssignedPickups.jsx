@@ -37,6 +37,7 @@ const AssignedPickups = ({ organizerId, refreshTrigger }) => {
         toast.error("Network error. Please try again.");
       }
       toast.error("Failed to load organizer pickups.");
+      setReports([]);
     } finally {
       setIsLoading(false);
     }
