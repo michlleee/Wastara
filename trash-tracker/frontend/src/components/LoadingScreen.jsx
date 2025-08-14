@@ -22,7 +22,7 @@ const LoadingScreen = ({ loading }) => {
 
   return (
     <div
-      className={`fixed inset-0 flex items-center justify-center bg-[#233525] transition-opacity duration-500 z-50
+      className={`fixed inset-0 flex items-center justify-center bg-[#233525] transition-opacity duration-500 z-100
       ${
         loading && !canFade
           ? "opacity-100"

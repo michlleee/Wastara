@@ -44,7 +44,7 @@ function FAQCard() {
     <div className="w-full py-20 bg-[#141414] text-white">
       <div className="max-w-4xl mx-auto px-4">
         <div className="text-center mb-12 sm:mb-16">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-transparent bg-gradient-to-r from-[#88A47C] to-[#a8c49c] bg-clip-text mb-4 animate-fade-in">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-transparent bg-gradient-to-r from-[#88A47C] to-[#a8c49c] bg-clip-text mb-4 animate-fade-in py-2">
             Frequently Asked Questions
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-[#88A47C] to-[#a8c49c] mx-auto rounded-full"></div>

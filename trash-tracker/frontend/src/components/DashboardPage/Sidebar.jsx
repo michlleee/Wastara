@@ -1,5 +1,6 @@
 import { useState } from "react";
 import SidebarIcon from "./SidebarIcon";
+import LogoutIcon from "../LogoutIcon";
 
 const Sidebar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -132,7 +133,7 @@ const Sidebar = () => {
 
         {/* Bottom section */}
         <div className="relative z-10">
-          <SidebarIcon
+          <LogoutIcon
             hoverBg="hover:bg-red-600/50"
             hoverText="group-hover:text-red-400"
             label="Logout"

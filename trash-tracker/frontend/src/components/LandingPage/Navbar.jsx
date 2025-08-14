@@ -44,7 +44,7 @@ const Navbar = ({ className = "" }) => {
     { id: "about", label: "About Us" },
     { id: "vision", label: "Vision & Mission" },
     { id: "features", label: "Features" },
-    { id: "how", label: "How to Use" },
+    { id: "faq", label: "FAQ" },
   ]
 
   useEffect(() => {

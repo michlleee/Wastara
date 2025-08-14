@@ -1,5 +1,7 @@
 import { useState } from "react";
 import SidebarIcon from "../DashboardPage/SidebarIcon";
+import { useNavigate } from "react-router-dom";
+import LogoutIcon from "../LogoutIcon";
 
 const OrganizerSidebar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -7,6 +9,8 @@ const OrganizerSidebar = () => {
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
+
+  const navigate = useNavigate();
 
   return (
     <>
@@ -131,7 +135,7 @@ const OrganizerSidebar = () => {
 
         {/* Bottom section */}
         <div className="relative z-10">
-          <SidebarIcon
+          <LogoutIcon
             label="Logout"
             hoverBg="hover:bg-red-600/40"
             hoverText="group-hover:text-red-400"

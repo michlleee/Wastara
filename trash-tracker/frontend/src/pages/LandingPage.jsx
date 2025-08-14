@@ -74,7 +74,7 @@ const LandingPage = () => {
         <section id="features" className="scroll-mt-24">
           <OurFeatures />
         </section>
-        <section id="features" className="scroll-mt-24">
+        <section id="faq" className="scroll-mt-24">
           <FAQCard />
         </section>
       </div>

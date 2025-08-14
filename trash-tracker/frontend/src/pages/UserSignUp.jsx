@@ -54,6 +54,23 @@ function UserSignUp() {
           <div className="absolute inset-0 bg-black opacity-75"></div>
         </div>
 
+        <div className="bg-white sm:bg-gradient-to-t from-blue-200 via-white to-white">
+          <button
+            onClick={() => navigate("/")}
+            className="relative top-4 left-4 z-10 w-10 h-10 flex items-center justify-center hover:scale-130 transition-transform duration-300"
+            aria-label="Back to Home"
+          >
+            <svg
+              className="w-6 h-6 text-black"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+        </div>
         <div className="sm:w-1/2 w-full flex items-center justify-center p-6 sm:p-12 bg-gradient-to-t from-blue-200 via-white to-white">
           <div className="w-full max-w-md">
             <h1 className="text-2xl font-semibold text-gray-800 mb-6 text-center sm:text-left">

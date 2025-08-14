@@ -5,6 +5,7 @@ import image from "../assets/bg_sampah5.jpg";
 
 function LoginPage() {
   const navigate = useNavigate();
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -49,9 +50,26 @@ function LoginPage() {
 
   return (
     <>
+
       <div className="min-h-screen flex flex-col sm:flex-row">
 
-        <div className="sm:w-1/2 w-full flex items-center justify-center p-6 sm:p-12 bg-gradient-to-t from-gray-400 via-white to-white">
+        <div className="sm:w-1/2 w-full flex items-center justify-center p-6 sm:p-12 bg-gradient-to-t from-gray-400 via-white to-white relative pt-14 order-2 sm:order-2">
+          <button
+            onClick={() => navigate("/")}
+            className="absolute top-4 left-2 sm:left-4 z-10 w-10 h-10 flex items-center justify-center hover:scale-130 transition-transform duration-300"
+            aria-label="Back to Home"
+          >
+            
+            <svg
+              className="w-6 h-6 text-black"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
           <div className="w-full max-w-md">
             <h1 className="text-2xl font-semibold text-gray-800 mb-6 text-center sm:text-left">
               Login to your account
@@ -72,6 +90,7 @@ function LoginPage() {
                   placeholder="Your name"
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  required
                 />
               </div>
 
@@ -89,6 +108,7 @@ function LoginPage() {
                   placeholder="Your email"
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  required
                 />
               </div>
 
@@ -106,6 +126,7 @@ function LoginPage() {
                   placeholder="Password"
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  required
                 />
               </div>
 
@@ -115,7 +136,7 @@ function LoginPage() {
               >
                 Login
               </button>
-              <p className="mt-4 text-center text-sm text-gray-600">{message}</p>
+              <p className="text-center text-sm text-blue-700">{message}</p>
 
               <p className="mt-4 text-center text-sm text-gray-600">
                 No account?{" "}
