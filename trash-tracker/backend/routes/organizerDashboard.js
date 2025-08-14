@@ -2,6 +2,7 @@ import express from "express";
 import Report from "../models/Report.js";
 import Cluster from "../models/Cluster.js";
 import User from "../models/User.js";
+import { ensureAuthenticated, authorizeRole } from "../middleware/Auth.js";
 
 const router = express.Router();
 
@@ -10,34 +11,40 @@ function isLoggedIn(req, res, next) {
   res.status(401).json({ message: "Not authorized" });
 }
 
-router.get("/reports", isLoggedIn, async (req, res) => {
-  const orgId = req.user._id;
+router.get(
+  "/reports",
+  isLoggedIn,
+  ensureAuthenticated,
+  authorizeRole("organizer"),
+  async (req, res) => {
+    const orgId = req.user._id;
 
-  try {
-    const reports = await Report.find({ assignedOrganizerId: orgId });
-    const cluster = await Cluster.findOne({ organizerId: orgId });
+    try {
+      const reports = await Report.find({ assignedOrganizerId: orgId });
+      const cluster = await Cluster.findOne({ organizerId: orgId });
 
-    res.status(200).json({
-      report: reports,
-      cluster: cluster
-        ? {
-            id: cluster._id,
-            gmapsUrl: cluster.gmapsUrl,
-            reportIds: cluster.reportIds,
-          }
-        : null,
-      message:
-        reports.length > 0
-          ? "Existing reports retrieved"
-          : "No existing reports assigned",
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: "Error in retrieving current assigned reports",
-      error: error.message,
-    });
+      res.status(200).json({
+        report: reports,
+        cluster: cluster
+          ? {
+              id: cluster._id,
+              gmapsUrl: cluster.gmapsUrl,
+              reportIds: cluster.reportIds,
+            }
+          : null,
+        message:
+          reports.length > 0
+            ? "Existing reports retrieved"
+            : "No existing reports assigned",
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: "Error in retrieving current assigned reports",
+        error: error.message,
+      });
+    }
   }
-});
+);
 
 router.post("/cancel", isLoggedIn, async (req, res) => {
   const reportId = req.body.reportId;

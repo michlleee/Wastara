@@ -23,8 +23,19 @@ const AssignedPickups = ({ organizerId, refreshTrigger }) => {
       setReports(result.data.report || []);
       setCluster(result.data.cluster || null);
     } catch (error) {
-      console.log(error);
-      setReports([]);
+      if (error.response) {
+        const { status, data } = error.response;
+
+        if (status === 401 && data.notAuthenticated) {
+          window.location.href = "/login";
+        } else if (status === 403) {
+          window.location.href = "/login";
+        } else {
+          toast.error(data.message || "Failed to load organizer pickups.");
+        }
+      } else {
+        toast.error("Network error. Please try again.");
+      }
       toast.error("Failed to load organizer pickups.");
     } finally {
       setIsLoading(false);

@@ -1,6 +1,7 @@
 import express from "express";
 import Report from "../models/Report.js";
 import { reportUpload } from "../config/cloudinary.js";
+import { ensureAuthenticated, authorizeRole } from "../middleware/Auth.js";
 
 const router = express.Router();
 
@@ -9,20 +10,26 @@ function isLoggedIn(req, res, next) {
   res.status(401).json({ message: "Not authorized" });
 }
 
-router.get("/reports", isLoggedIn, async (req, res) => {
-  try {
-    const result = await Report.find({ userId: req.user._id });
-    if (result.length > 0) {
-      res.status(200).json(result);
-    } else {
-      res.status(200).json({ message: "No reports made" });
+router.get(
+  "/reports",
+  isLoggedIn,
+  ensureAuthenticated,
+  authorizeRole("user"),
+  async (req, res) => {
+    try {
+      const result = await Report.find({ userId: req.user._id });
+      if (result.length > 0) {
+        res.status(200).json(result);
+      } else {
+        res.status(200).json({ message: "No reports made" });
+      }
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Error in retrieving reports", error: error.message });
     }
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error in retrieving reports", error: error.message });
   }
-});
+);
 
 router.post(
   "/create",

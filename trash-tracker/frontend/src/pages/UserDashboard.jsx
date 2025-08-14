@@ -36,6 +36,19 @@ const UserDashboard = () => {
         setReports([]);
       }
     } catch (err) {
+      if (err.response) {
+        const { status, data } = err.response;
+
+        if (status === 401 && data.notAuthenticated) {
+          window.location.href = "/login";
+        } else if (status === 403) {
+          window.location.href = "/login";
+        } else {
+          toast.error(data.message || "Failed to load user pickups.");
+        }
+      } else {
+        toast.error("Network error. Please try again.");
+      }
       setReports([]);
     }
   };
