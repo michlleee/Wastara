@@ -4,39 +4,55 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import dotenv from "dotenv";
 dotenv.config();
 
-passport.use("google", new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: process.env.GOOGLE_CALLBACK_URL,
-},
-async (accessToken, refreshToken, profile, cb) => {
-    try {
-        const existingUser = await User.findOne({googleId: profile.id});
+passport.use(
+  "google",
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: process.env.GOOGLE_CALLBACK_URL,
+    },
+    async (accessToken, refreshToken, profile, cb) => {
+      try {
+        const existingUser = await User.findOne({ googleId: profile.id });
 
-        if(existingUser){
-            return cb(null, existingUser);
+        if (existingUser) {
+          return cb(null, existingUser);
         }
         //user doesnt exist
-        const newUser = await new User({
-            googleId: profile.id,
-            name: profile.displayName,
-            email: profile.emails[0].value,
-            authType: "google",
-        }).save();
+        const tempUserData = {
+          googleId: profile.id,
+          name: profile.displayName,
+          email: profile.emails[0].value,
+          authType: "google",
+        };
 
-        cb(null, newUser);
-
-    } catch (error) {
+        cb(null, tempUserData);
+      } catch (error) {
         console.log(error);
+      }
     }
-}
-));
+  )
+);
 
-passport.serializeUser((user, cb)=>{
-    cb(null, user.id);
-})
+passport.serializeUser((user, cb) => {
+  if (user._id) {
+    cb(null, { id: user._id, isTemp: false });
+  } else {
+    cb(null, { tempUser: user, isTemp: true });
+  }
+});
 
-passport.deserializeUser( async (id, cb) =>{
-    const user = await User.findById(id);
-    cb(null, user)
-})
+passport.deserializeUser(async (data, cb) => {
+  try {
+    if (data.isTemp) {
+      // Return temp user object directly (not in DB yet)
+      return cb(null, data.tempUser);
+    }
+    // Lookup from DB
+    const dbUser = await User.findById(data.id);
+    cb(null, dbUser);
+  } catch (err) {
+    cb(err, null);
+  }
+});

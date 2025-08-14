@@ -47,7 +47,7 @@ function App() {
           <Route path="/signup/user" element={<SignUpUser />} />
           <Route path="/signup/organizer" element={<SignUpOrganizer />} />
           <Route
-            path="/signup/organizer/finish/:mongoId"
+            path="/signup/organizer/finish"
             element={<FinishOrganizerSignUp />}
           />
           <Route path="/login" element={<LoginPage />} />

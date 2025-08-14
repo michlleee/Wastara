@@ -39,14 +39,10 @@ function FinishOrganizerSignUp() {
         formData.append("ktpImage", form.ktpImage);
       }
 
-      const res = await axios.patch(
-        `/api/signup/organizer/${mongoId}`,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-          withCredentials: true,
-        }
-      );
+      const res = await axios.patch(`/api/signup/organizer`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+      });
 
       const data = res.data;
 

@@ -93,7 +93,7 @@ const UserDashboard = () => {
               />
               <StatCard
                 title="Trash reported this month:"
-                value={12}
+                value={1}
                 unit="trashes"
                 icon={
                   <img
@@ -106,7 +106,7 @@ const UserDashboard = () => {
               />
               <StatCard
                 title="Pickups Completed:"
-                value={132}
+                value={userData.reportCount}
                 unit="trashes"
                 icon={
                   <img

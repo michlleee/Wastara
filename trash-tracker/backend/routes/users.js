@@ -102,40 +102,61 @@ router.post("/organizer", upload.single("ktpImage"), async (req, res) => {
 });
 
 //handle organizer signup via google (second step completion)
-router.patch("/organizer/:id", upload.single("ktpImage"), async (req, res) => {
+router.patch("/organizer", upload.single("ktpImage"), async (req, res) => {
   try {
-    const updates = {
-      role: "organizer",
-      nationalId: req.file?.path,
-      isApproved: false,
-      pickupCount: 0,
-      organizationName: req.body.organizationName,
-      phone: req.body.whatsappNumber,
-    };
-    await User.findByIdAndUpdate(req.params.id, updates);
+    let dbUser;
+    if (!req.user._id) {
+      const newUser = new User({
+        googleId: req.user.googleId,
+        name: req.user.name,
+        email: req.user.email,
+        authType: req.user.authType || "google",
+        role: "organizer",
+        nationalId: req.file?.path,
+        isApproved: false,
+        pickupCount: 0,
+        organizationName: req.body.organizationName,
+        phone: req.body.whatsappNumber,
+      });
 
-    const updatedOrg = await User.findById(req.params.id);
+      dbUser = await newUser.save();
+    } else {
+      const updates = {
+        role: "organizer",
+        nationalId: req.file?.path,
+        isApproved: false,
+        pickupCount: 0,
+        organizationName: req.body.organizationName,
+        phone: req.body.whatsappNumber,
+      };
 
-    if (!updatedOrg) {
-      return res.status(404).json({ message: "User not found" });
+      dbUser = await User.findByIdAndUpdate(req.user._id, updates, {
+        new: true,
+      });
     }
 
-    req.login(updatedOrg, (err) => {
+    if (!dbUser) {
+      return res
+        .status(404)
+        .json({ message: "User not found or could not be created" });
+    }
+
+    req.login(dbUser, (err) => {
       if (err) {
-        console.log(err);
+        console.error("Login after update failed:", err);
         return res.status(500).json({ message: "Login after update failed" });
       }
       res.status(200).json({
         message: "Success",
         user: {
-          id: updatedOrg._id,
-          name: updatedOrg.name,
-          email: updatedOrg.email,
+          id: dbUser._id,
+          name: dbUser.name,
+          email: dbUser.email,
         },
       });
     });
   } catch (error) {
-    console.error(error);
+    console.error("Organizer update error:", error);
     res.status(500).json({ message: "Update failed" });
   }
 });

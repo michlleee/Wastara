@@ -73,25 +73,23 @@ app.get(
   async (req, res) => {
     try {
       const intent = req.query.state;
-      const mongoId = req.user._id.toString();
       const user = req.user;
 
       console.log("Intent from state:", intent);
       console.log("User:", user);
 
-      // No role means first time signup
+      //If it's a temp user (not yet in DB)
       if (!user.role) {
         if (intent === "organizer") {
-          return res.redirect(
-            `${FRONTEND_URL}/signup/organizer/finish/${mongoId}`
-          );
+          return res.redirect(`${FRONTEND_URL}/signup/organizer/finish`);
         } else if (intent === "user") {
-          await User.findByIdAndUpdate(mongoId, {
+          const savedUser = await new User({
+            ...user,
             role: "user",
             reportCount: 0,
-          });
-          const updatedUser = await User.findById(mongoId);
-          return req.login(updatedUser, (err) => {
+          }).save();
+
+          return req.login(savedUser, (err) => {
             if (err) {
               console.error("Login error after setting user role:", err);
               return res.redirect(`${FRONTEND_URL}/login`);
