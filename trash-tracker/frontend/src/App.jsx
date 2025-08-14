@@ -61,57 +61,57 @@ function App() {
   return (
     <BrowserRouter>
       <Toaster position="bottom-center" reverseOrder={false} />
-      {loadingUser ? (
-        <LoadingScreen loading={true} />
-      ) : (
-        <Routes>
-          <Route element={<LayoutWithLoader />}>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/signup/user" element={<SignUpUser />} />
-            <Route path="/signup/organizer" element={<SignUpOrganizer />} />
-            <Route
-              path="/signup/organizer/finish"
-              element={<FinishOrganizerSignUp />}
-            />
-            <Route path="/login" element={<LoginPage />} />
 
-            {/* PLS PROTECT THESE ROUTES! TT */}
-            <Route
-              path="/dashboard/user"
-              element={
-                <ProtectedRoute
-                  allowedRoles={["user"]}
-                  userRole={userData?.role}
-                >
-                  <UserDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/dashboard/organizer"
-              element={
-                <ProtectedRoute
-                  allowedRoles={["organizer"]}
-                  userRole={userData?.role}
-                >
-                  <OrganizerDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/dashboard/user/report"
-              element={
-                <ProtectedRoute
-                  allowedRoles={["user"]}
-                  userRole={userData?.role}
-                >
-                  <AddReport />
-                </ProtectedRoute>
-              }
-            />
-          </Route>
-        </Routes>
-      )}
+      <Routes>
+        <Route element={<LayoutWithLoader />}>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/signup/user" element={<SignUpUser />} />
+          <Route path="/signup/organizer" element={<SignUpOrganizer />} />
+          <Route
+            path="/signup/organizer/finish"
+            element={<FinishOrganizerSignUp />}
+          />
+          <Route path="/login" element={<LoginPage />} />
+
+          {/* PLS PROTECT THESE ROUTES! TT */}
+          <Route
+            path="/dashboard/user"
+            element={
+              <ProtectedRoute
+                allowedRoles={["user"]}
+                userRole={userData?.role}
+                loadingUser={loadingUser}
+              >
+                <UserDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/organizer"
+            element={
+              <ProtectedRoute
+                allowedRoles={["organizer"]}
+                userRole={userData?.role}
+                loadingUser={loadingUser}
+              >
+                <OrganizerDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/user/report"
+            element={
+              <ProtectedRoute
+                allowedRoles={["user"]}
+                userRole={userData?.role}
+                loadingUser={loadingUser}
+              >
+                <AddReport />
+              </ProtectedRoute>
+            }
+          />
+        </Route>
+      </Routes>
     </BrowserRouter>
   );
 }
