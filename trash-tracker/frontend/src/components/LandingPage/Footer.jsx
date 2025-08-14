@@ -8,8 +8,7 @@ export default () => {
     {
       label: "Support",
       items: [
-        { href: "#", name: "FAQ" },
-        { href: "#", name: "Contact Us" },
+        { href: "#", name: "Donate Us" },
         { href: "#", name: "Bug Report" },
       ],
     },

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import SidebarIcon from "./SidebarIcon";
+import SidebarIcon from "../DashboardPage/SidebarIcon";
 
-const Sidebar = () => {
+const OrganizerSidebar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -10,7 +10,7 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* Mobile Hamburger Button - only show when menu is closed */}
+      {/* Mobile Hamburger Button */}
       {!isMobileMenuOpen && (
         <button
           onClick={toggleMobileMenu}
@@ -34,13 +34,11 @@ const Sidebar = () => {
 
       <div
         className={`
-        flex flex-col w-20 bg-gradient-to-b from-black via-gray-900 to-black p-4 items-center h-screen justify-between shadow-2xl border-r border-gray-800/50 backdrop-blur-sm relative overflow-hidden
-        left-0 top-0 z-[55] 
-        transition-transform duration-300 ease-in-out
-        ${
-          isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0
-      `}
+          flex flex-col w-20 bg-gradient-to-b from-black via-gray-900 to-black p-4 items-center h-screen justify-between shadow-2xl border-r border-gray-800/50 backdrop-blur-sm relative overflow-hidden
+          left-0 top-0 z-[55] 
+          transition-transform duration-300 ease-in-out
+          ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0
+        `}
         style={{
           position: "fixed",
           left: 0,
@@ -73,27 +71,28 @@ const Sidebar = () => {
         {/* Top section */}
         <div className="flex flex-col space-y-8 items-center relative z-10">
           <div className="group cursor-pointer relative">
-            <div className="w-14 h-14 bg-gradient-to-br from-emerald-400 via-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-xl hover:shadow-emerald-500/30 transition-all duration-500 hover:scale-110 ring-2 ring-emerald-500/30 hover:ring-emerald-400/50 hover:rotate-3">
+            {/* Logo with orange gradient */}
+            <div className="w-14 h-14 bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-xl hover:shadow-orange-500/30 transition-all duration-500 hover:scale-110 ring-2 ring-orange-500/30 hover:ring-orange-400/50 hover:rotate-3">
               <img
                 src="../../src/assets/wastara_logo_small.svg"
                 alt="Wastara Logo"
                 className="w-10 h-10 group-hover:scale-110 transition-transform duration-300"
               />
             </div>
-            {/* Pulsing glow effect */}
-            <div className="absolute -inset-2 bg-gradient-to-r from-emerald-600 via-emerald-400 to-emerald-600 rounded-2xl blur-lg opacity-0 group-hover:opacity-30 transition-opacity duration-500 animate-pulse"></div>
-            {/* Rotating ring */}
-            <div className="absolute -inset-1 border-2 border-emerald-400/20 rounded-2xl group-hover:border-emerald-400/40 transition-colors duration-300 group-hover:animate-spin"></div>
+            {/* Pulsing orange glow */}
+            <div className="absolute -inset-2 bg-gradient-to-r from-orange-600 via-orange-400 to-orange-600 rounded-2xl blur-lg opacity-0 group-hover:opacity-30 transition-opacity duration-500 animate-pulse"></div>
+            {/* Rotating orange ring */}
+            <div className="absolute -inset-1 border-2 border-orange-400/20 rounded-2xl group-hover:border-orange-400/40 transition-colors duration-300 group-hover:animate-spin"></div>
           </div>
 
           <div className="flex flex-col space-y-6 items-center">
             <SidebarIcon
-              hoverBg="hover:bg-emerald-500/15"
-              hoverText="group-hover:text-emerald-400"
               label="Report"
+              hoverBg="hover:bg-orange-500/15"
+              hoverText="group-hover:text-orange-400"
               icon={
                 <svg
-                  className="w-6 h-6 text-white group-hover:text-emerald-400 transition-colors duration-300"
+                  className="w-6 h-6 text-white group-hover:text-orange-400 transition-colors duration-300"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -109,12 +108,12 @@ const Sidebar = () => {
               }
             />
             <SidebarIcon
-              hoverBg="hover:bg-emerald-500/15"
-              hoverText="group-hover:text-emerald-400"
               label="History"
+              hoverBg="hover:bg-orange-500/15"
+              hoverText="group-hover:text-orange-400"
               icon={
                 <svg
-                  className="w-6 h-6 text-white group-hover:text-emerald-400 transition-colors duration-300"
+                  className="w-6 h-6 text-white group-hover:text-orange-400 transition-colors duration-300"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -133,12 +132,12 @@ const Sidebar = () => {
         {/* Bottom section */}
         <div className="relative z-10">
           <SidebarIcon
-            hoverBg="hover:bg-red-600/50"
-            hoverText="group-hover:text-red-400"
             label="Logout"
+            hoverBg="hover:bg-red-600/40"
+            hoverText="group-hover:text-red-400"
             icon={
               <svg
-                className="w-6 h-6 text-red-400 group-hover:text-red-300 transition-colors duration-300"
+                className="w-6 h-6 text-red-400 transition-colors duration-300"
                 fill="currentColor"
                 viewBox="0 0 24 24"
               >
@@ -152,4 +151,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default OrganizerSidebar;

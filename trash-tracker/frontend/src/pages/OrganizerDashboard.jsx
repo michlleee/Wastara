@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Sidebar from "../components/DashboardPage/Sidebar";
+import OrganizerSidebar from "../components/OrganizerDashboardPage/OrganizerSidebar";
 import OrganizerProfileCard from "../components/DashboardPage/OrganizerProfileCard";
 import AssignedPickups from "../components/OrganizerDashboardPage/AssignedPickups";
 import RequestTrashForm from "../components/OrganizerDashboardPage/RequestTrashForm";
@@ -44,7 +44,7 @@ function OrganizerDashboard() {
     <div className="min-h-screen bg-gray-300 relative overflow-hidden">
       <div className="flex min-h-screen relative z-10">
         <div className="flex-shrink-0">
-          <Sidebar />
+          <OrganizerSidebar />
         </div>
 
         <div className="flex-1 p-8 space-y-6 md:ml-18 pt-16 md:pt-4">
@@ -52,11 +52,17 @@ function OrganizerDashboard() {
             <OrganizerProfileCard name={organizerData.name} />
           </div>
 
-          <RequestTrashForm refreshPickupHandler={refreshPickupHandler} />
-          <AssignedPickups
-            organizerId={organizerData._id}
-            refreshTrigger={refreshPickups}
-          />
+          <div className="flex flex-col lg:flex-row lg:items-stretch gap-6 lg:h-auto">
+            <div className="w-full lg:w-auto lg:flex-shrink-0 flex">
+              <RequestTrashForm refreshPickupHandler={refreshPickupHandler} />
+            </div>
+            <div className="w-full lg:flex-1 flex">
+              <AssignedPickups
+                organizerId={organizerData._id}
+                refreshTrigger={refreshPickups}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>

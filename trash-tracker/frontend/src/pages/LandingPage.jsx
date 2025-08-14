@@ -6,6 +6,7 @@ import AboutUsCard from "../components/LandingPage/AboutUsCard"
 import ProblemSection from "../components/LandingPage/ProblemSection"
 import VisionMission from "../components/LandingPage/VisionMission"
 import OurFeatures from "../components/LandingPage/OurFeatures"
+import FAQCard from "../components/LandingPage/FAQCard"
 
 const LandingPage = () => {
   return (
@@ -72,6 +73,9 @@ const LandingPage = () => {
         </section>
         <section id="features" className="scroll-mt-24">
           <OurFeatures />
+        </section>
+        <section id="features" className="scroll-mt-24">
+          <FAQCard />
         </section>
       </div>
 

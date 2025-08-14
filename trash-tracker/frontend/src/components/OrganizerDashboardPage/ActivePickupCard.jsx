@@ -104,8 +104,41 @@ const ActivePickupCard = ({
         onClick={() => {
           onFinish(reportId, userId);
         }}
-        className="border-2 border-amber-600"
+        className="
+          group/btn
+          bg-green-50
+          border
+          border-green-200
+          text-green-600
+          px-3 sm:px-4
+          py-2 sm:py-2.5
+          rounded-lg sm:rounded-xl
+          text-sm font-medium
+          hover:bg-green-100
+          hover:border-green-300
+          hover:text-green-700
+          transition-all
+          duration-200
+          shadow-sm
+          hover:shadow-md
+          focus:outline-none
+          focus:ring-2
+          focus:ring-green-200
+          focus:ring-opacity-50
+          self-start
+          flex
+          items-center
+          gap-2
+          w-full xs:w-auto
+        "
       >
+        <svg 
+          className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover/btn:scale-110 transition-transform duration-200" 
+          fill="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
+        </svg>
         Finish Pickup
       </button>
       <button
