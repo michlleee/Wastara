@@ -19,6 +19,7 @@
     "@tailwindcss/vite": "^4.1.11",
     "axios": "^1.11.0",
     "framer-motion": "^12.23.12",
+    "gsap": "^3.13.0",
     "haversine": "^1.1.1",
     "haversine-distance": "^1.2.4",
     "leaflet": "^1.9.4",

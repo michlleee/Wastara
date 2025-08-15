@@ -1,12 +1,12 @@
-import landingBg from "../assets/bg_landing_page.png"
-import Navbar from "../components/LandingPage/Navbar"
-import Footer from "../components/LandingPage/Footer"
-import HeroSection from "../components/LandingPage/HeroSection"
-import AboutUsCard from "../components/LandingPage/AboutUsCard"
-import ProblemSection from "../components/LandingPage/ProblemSection"
-import VisionMission from "../components/LandingPage/VisionMission"
-import OurFeatures from "../components/LandingPage/OurFeatures"
-import FAQCard from "../components/LandingPage/FAQCard"
+import landingBg from "../assets/bg_landing_page.png";
+import Navbar from "../components/LandingPage/Navbar";
+import Footer from "../components/LandingPage/Footer";
+import HeroSection from "../components/LandingPage/HeroSection";
+import AboutUsCard from "../components/LandingPage/AboutUsCard";
+import ProblemSection from "../components/LandingPage/ProblemSection";
+import VisionMission from "../components/LandingPage/VisionMission";
+import OurFeatures from "../components/LandingPage/OurFeatures";
+import FAQCard from "../components/LandingPage/FAQCard";
 
 const LandingPage = () => {
   return (
@@ -20,26 +20,30 @@ const LandingPage = () => {
       <div
         id="hero-section"
         className="relative min-h-screen bg-cover bg-center"
-        style={{ backgroundImage: `url(${landingBg})` }}
+        style={{
+          minHeight: "105vh",
+          backgroundImage: `url(${landingBg})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
       >
         <div className="relative z-10 flex flex-col min-h-screen">
           <HeroSection />
-
-          <div className="relative w-full h-20 z-10">
-            <div
-              className="absolute top-0 left-0 w-full h-full"
-              style={{
-                backgroundColor: "#6D9D58",
-                clipPath: "polygon(0% 60%, 100% 0%, 100% 40%, 0% 100%)",
-              }}
-            ></div>
-            <div
-              className="absolute top-0 left-0 w-full h-full bg-white"
-              style={{
-                clipPath: "polygon(0% 100%, 100% 40%, 100% 100%, 0% 100%)",
-              }}
-            ></div>
-          </div>
+        </div>
+        <div className="relative w-full h-20 z-10">
+          <div
+            className="absolute top-0 left-0 w-full h-full"
+            style={{
+              backgroundColor: "#6D9D58",
+              clipPath: "polygon(0% 60%, 100% 0%, 100% 40%, 0% 100%)",
+            }}
+          ></div>
+          <div
+            className="absolute top-0 left-0 w-full h-full bg-white"
+            style={{
+              clipPath: "polygon(0% 100%, 100% 40%, 100% 100%, 0% 100%)",
+            }}
+          ></div>
         </div>
       </div>
 
@@ -81,7 +85,7 @@ const LandingPage = () => {
 
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default LandingPage
+export default LandingPage;

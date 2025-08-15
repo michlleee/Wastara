@@ -2,7 +2,7 @@ import AboutUsImage from "../../assets/trash2.jpg";
 
 const AboutUsCard = () => {
   return (
-    <div className="relative z-20 bg-white my-10 sm:my-30">
+    <div className="relative z-20 bg-white my-10 sm:my-40">
       <div className="flex flex-col sm:flex-row items-center">
         {/* Left Image */}
         <div className="w-full pb-10 sm:pb-0 sm:w-1/2 ">

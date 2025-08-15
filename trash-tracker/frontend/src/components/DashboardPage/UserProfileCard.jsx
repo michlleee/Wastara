@@ -1,7 +1,31 @@
 import { useEffect, useState } from "react";
+import TextType from "../TypingEffect";
 
 const UserProfileCard = ({ name }) => {
   const [now, setNow] = useState(new Date());
+
+  const greetings = {
+    en: "Hello",
+    zh: "你好",
+    es: "Hola",
+    fr: "Bonjour",
+    de: "Hallo",
+    ja: "こんにちは",
+    ko: "안녕하세요",
+    id: "Halo",
+    ar: "مرحبا",
+    ru: "Привет",
+    hi: "नमस्ते",
+    he: "שלום",
+    th: "สวัสดี",
+    vi: "Xin chào",
+    it: "Ciao",
+    tr: "Merhaba",
+    el: "Γειά σου",
+    sw: "Jambo",
+    tl: "Kamusta",
+    fi: "Hei",
+  };
 
   useEffect(() => {
     setNow(new Date());
@@ -50,7 +74,15 @@ const UserProfileCard = ({ name }) => {
 
         <div className="relative flex justify-between items-end ml-2 z-10">
           <div>
-            <h2 className="text-lg sm:text-3xl font-bold mb-1">Hello,</h2>
+            <h2 className="text-lg sm:text-3xl font-bold mb-1">
+              <TextType
+                text={Object.values(greetings)}
+                typingSpeed={150}
+                pauseDuration={5000}
+                showCursor={true}
+                cursorCharacter="|"
+              />
+            </h2>
             <h2 className="text-lg sm:text-3xl font-bold mb-1">{name}!</h2>
           </div>
           <div className="text-right">
