@@ -1,8 +1,10 @@
 import { useState } from "react";
 import SidebarIcon from "./SidebarIcon";
 import LogoutIcon from "../LogoutIcon";
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
+  const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -71,7 +73,6 @@ const Sidebar = () => {
           </button>
         )}
 
-        {/* Top section */}
         <div className="flex flex-col space-y-8 items-center relative z-10">
           <div className="group cursor-pointer relative">
             <div className="w-14 h-14 bg-gradient-to-br from-emerald-400 via-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-xl hover:shadow-emerald-500/30 transition-all duration-500 hover:scale-110 ring-2 ring-emerald-500/30 hover:ring-emerald-400/50 hover:rotate-3">
@@ -81,14 +82,13 @@ const Sidebar = () => {
                 className="w-10 h-10 group-hover:scale-110 transition-transform duration-300"
               />
             </div>
-            {/* Pulsing glow effect */}
             <div className="absolute -inset-2 bg-gradient-to-r from-emerald-600 via-emerald-400 to-emerald-600 rounded-2xl blur-lg opacity-0 group-hover:opacity-30 transition-opacity duration-500 animate-pulse"></div>
-            {/* Rotating ring */}
             <div className="absolute -inset-1 border-2 border-emerald-400/20 rounded-2xl group-hover:border-emerald-400/40 transition-colors duration-300 group-hover:animate-spin"></div>
           </div>
 
           <div className="flex flex-col space-y-6 items-center">
             <SidebarIcon
+              handleClick={() => navigate("/dashboard/user/report")}
               hoverBg="hover:bg-emerald-500/15"
               hoverText="group-hover:text-emerald-400"
               label="Report"
@@ -106,25 +106,6 @@ const Sidebar = () => {
                   <path d="M8 6V4h8v2" />
                   <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
                   <path d="M12 10c0-2 1.5-3.5 3.5-3.5S19 8 19 10c0 2.5-3.5 6-3.5 6s-3.5-3.5-3.5-6z" />
-                </svg>
-              }
-            />
-            <SidebarIcon
-              hoverBg="hover:bg-emerald-500/15"
-              hoverText="group-hover:text-emerald-400"
-              label="History"
-              icon={
-                <svg
-                  className="w-6 h-6 text-white group-hover:text-emerald-400 transition-colors duration-300"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="12" cy="12" r="9" />
-                  <path d="M12 7v5l3 2" />
                 </svg>
               }
             />

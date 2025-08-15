@@ -89,48 +89,6 @@ const OrganizerSidebar = () => {
             <div className="absolute -inset-1 border-2 border-orange-400/20 rounded-2xl group-hover:border-orange-400/40 transition-colors duration-300 group-hover:animate-spin"></div>
           </div>
 
-          <div className="flex flex-col space-y-6 items-center">
-            <SidebarIcon
-              label="Report"
-              hoverBg="hover:bg-orange-500/15"
-              hoverText="group-hover:text-orange-400"
-              icon={
-                <svg
-                  className="w-6 h-6 text-white group-hover:text-orange-400 transition-colors duration-300"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M3 6h18" />
-                  <path d="M8 6V4h8v2" />
-                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                  <path d="M12 10c0-2 1.5-3.5 3.5-3.5S19 8 19 10c0 2.5-3.5 6-3.5 6s-3.5-3.5-3.5-6z" />
-                </svg>
-              }
-            />
-            <SidebarIcon
-              label="History"
-              hoverBg="hover:bg-orange-500/15"
-              hoverText="group-hover:text-orange-400"
-              icon={
-                <svg
-                  className="w-6 h-6 text-white group-hover:text-orange-400 transition-colors duration-300"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="12" cy="12" r="9" />
-                  <path d="M12 7v5l3 2" />
-                </svg>
-              }
-            />
-          </div>
         </div>
 
         {/* Bottom section */}

@@ -90,63 +90,49 @@ const UserDashboard = () => {
           <div className="space-y-6">
             <UserCard name={userData.name} />
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              <StatCard
-                title="Total trash reported:"
-                value={reports.length}
-                unit="trashes"
-                icon={
-                  <img
-                    className="w-6 h-6"
-                    draggable="false"
-                    src={happyFaceIcon}
-                    alt="happy face icon"
+            {/* Main layout - Left column (StatCards + ReportNow) and Right column (ActivePickups) */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:items-stretch">
+              {/* Left column - StatCards and ReportNow stacked */}
+              <div className="space-y-6 flex flex-col">
+                {/* StatCards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <StatCard
+                    title="Total trash reported:"
+                    value={reports.length}
+                    unit="trashes"
+                    icon={
+                      <img
+                        className="w-6 h-6"
+                        draggable="false"
+                        src={happyFaceIcon}
+                        alt="happy face icon"
+                      />
+                    }
                   />
-                }
-              />
-              <StatCard
-                title="Trash reported this month:"
-                value={1}
-                unit="trashes"
-                icon={
-                  <img
-                    className="w-5 h-5"
-                    draggable="false"
-                    src={flagIcon}
-                    alt="flag icon"
+                  <StatCard
+                    title="Pickups Completed:"
+                    value={userData.reportCount}
+                    unit="trashes"
+                    icon={
+                      <img
+                        className="w-5 h-5"
+                        draggable="false"
+                        src={checkMark}
+                        alt="flag icon"
+                      />
+                    }
                   />
-                }
-              />
-              <StatCard
-                title="Pickups Completed:"
-                value={userData.reportCount}
-                unit="trashes"
-                icon={
-                  <img
-                    className="w-5 h-5"
-                    draggable="false"
-                    src={checkMark}
-                    alt="flag icon"
-                  />
-                }
-              />
-            </div>
-          </div>
+                </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <div className="lg:col-span-6">
-              <ActivePickups getUpdatedReports={getUpdates} />
-            </div>
-
-            <div className="lg:col-span-3">
-              <div className="bg-white backdrop-blur-sm p-6 rounded-2xl shadow-emerald-100/20 border border-white/30 flex flex-col items-center justify-center text-center transition-all duration-300 h-full">
-                <ReportNowCard />
+                {/* ReportNow below StatCards - shorter height */}
+                <div className="bg-white backdrop-blur-sm p-6 rounded-2xl shadow-emerald-100/20 border border-white/30 flex flex-col items-center justify-center text-center transition-all duration-300 h-100">
+                  <ReportNowCard />
+                </div>
               </div>
-            </div>
 
-            <div className="lg:col-span-3">
-              <div className="bg-white backdrop-blur-sm p-6 rounded-2xl shadow-emerald-100/20 border border-white/30 transition-all duration-300 h-full">
-                <MonthlyReportCard />
+              {/* Right column - ActivePickups - matches left column height */}
+              <div className="h-full">
+                <ActivePickups getUpdatedReports={getUpdates} />
               </div>
             </div>
           </div>

@@ -59,7 +59,7 @@ const ActivePickups = ({ getUpdatedReports }) => {
   }, []);
 
   return (
-    <div className="bg-gradient-to-br from-white to-slate-50 p-4 sm:p-6 lg:p-8 rounded-2xl border border-slate-200/60  min-h-[300px] max-h-[400px] sm:h-[360px] flex flex-col backdrop-blur-sm">
+    <div className="bg-gradient-to-br from-white to-slate-50 p-4 sm:p-6 lg:p-8 rounded-2xl border border-slate-200/60  min-h-[300px] max-h-150 lg:max-h-155 xl:max-h-150 flex flex-col backdrop-blur-sm">
       <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
         <div className="p-1.5 sm:p-2 bg-emerald-100 rounded-xl">
           <Package className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600" />
