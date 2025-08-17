@@ -16,11 +16,7 @@ const __dirname = path.dirname(__filename);
 
 const PY_DIR = path.join(__dirname, "..", "python");
 const SCRIPT = path.join(PY_DIR, "report_cluster.py");
-const PYTHON_BIN =
-  process.env.PYTHON_BIN ||
-  (process.platform === "win32"
-    ? path.join(PY_DIR, ".venv", "Scripts", "python.exe")
-    : path.join(PY_DIR, ".venv", "bin", "python"));
+const PYTHON_BIN = process.env.PYTHON_BIN || "python3";
 
 const HARD_MAX_KM = 10;
 

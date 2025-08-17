@@ -5,6 +5,9 @@ import image from "../assets/bg_sampah5.jpg";
 
 function LoginPage() {
   const navigate = useNavigate();
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+  const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+  const FRONTEND_CALLBACK = "https://wastara-frontend.vercel.app/auth/google/callback";
 
   const [form, setForm] = useState({
     name: "",
@@ -25,41 +28,62 @@ function LoginPage() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/signup/login",
+        `${BACKEND_URL}/api/signup/login`,
         form,
         { withCredentials: true }
       );
       const { user } = response.data;
 
       // Role-based redirect
-      console.log(user.role);
+      //console.log(user.role);
 
       if (user.role === "organizer") {
-        navigate(`/dashboard/organizer/${user.id}`);
-      } else {
-        navigate(`/dashboard/${user.id}`);
+        //console.log("redirection to organizer dashboard successful");
+        navigate(`/dashboard/organizer`);
+      } else if (user.role === "user") {
+        //console.log("redirection to user dashboard successful");
+        navigate(`/dashboard/user`);
       }
     } catch (err) {
       setMessage(err.response?.data?.message || "Something went wrong");
     }
   };
 
+  // const handleGoogleLogin = () => {
+    // window.location.href = `${BACKEND_URL}/auth/google`;
+
+  // };
   const handleGoogleLogin = () => {
-    window.location.href = `http://localhost:3000/auth/google`;
+    // carry the selected role to the backend via `state`
+    const OAUTH_STATE = role; // "user" or "organizer"
+
+    const params = new URLSearchParams({
+      client_id: GOOGLE_CLIENT_ID,
+      redirect_uri: FRONTEND_CALLBACK,
+      response_type: "code",
+      scope: "openid email profile",
+      include_granted_scopes: "true",
+      access_type: "offline", // optional: request refresh_token on first consent
+      prompt: "consent",      // optional: force consent to ensure refresh_token
+      state: OAUTH_STATE,
+    });
+
+    window.location.assign(
+      `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`
+    );
   };
+
+  
 
   return (
     <>
-
       <div className="min-h-screen flex flex-col sm:flex-row">
-
         <div className="sm:w-1/2 w-full flex items-center justify-center p-6 sm:p-12 bg-gradient-to-t from-gray-400 via-white to-white relative pt-14 order-2 sm:order-2">
           <button
             onClick={() => navigate("/")}
             className="absolute top-4 left-2 sm:left-4 z-10 w-10 h-10 flex items-center justify-center hover:scale-130 transition-transform duration-300"
             aria-label="Back to Home"
           >
-            
             <svg
               className="w-6 h-6 text-black"
               fill="none"
@@ -67,7 +91,11 @@ function LoginPage() {
               strokeWidth="2"
               viewBox="0 0 24 24"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
           </button>
           <div className="w-full max-w-md">
@@ -142,7 +170,9 @@ function LoginPage() {
                 No account?{" "}
                 <span
                   onClick={() =>
-                    navigate(role === "user" ? "/signup/user" : "/signup/organizer")
+                    navigate(
+                      role === "user" ? "/signup/user" : "/signup/organizer"
+                    )
                   }
                   className={`hover:underline cursor-pointer font-medium transition-colors duration-300 ${
                     role === "user" ? "text-blue-500" : "text-green-500"
@@ -151,13 +181,17 @@ function LoginPage() {
                   Sign up as {role === "user" ? "User" : "Organizer"}
                 </span>
               </p>
-              
+
               <div className="flex items-center justify-center gap-4">
                 <div className="flex bg-gray-200 rounded-full p-1 relative w-48">
                   {/* Sliding indicator */}
                   <div
                     className={`absolute top-1 bottom-1 w-1/2 rounded-full transition-all duration-300 
-                      ${role === "user" ? "bg-blue-500 left-1" : "bg-green-500 left-[calc(50%-0.125rem)]"}`}
+                      ${
+                        role === "user"
+                          ? "bg-blue-500 left-1"
+                          : "bg-green-500 left-[calc(50%-0.125rem)]"
+                      }`}
                   ></div>
 
                   <button

@@ -11,19 +11,32 @@ import "./config/passport.js";
 import User from "./models/User.js";
 import clusterRoutes from "./routes/clusterRoutes.js";
 import organizerRouter from "./routes/organizerDashboard.js";
+import googleAuthRoutes from "./routes/googleAuth.js";
 
 dotenv.config();
 
 const FRONTEND_URL = process.env.FRONTEND_URL;
-const port = 3000;
+const port = process.env.PORT || 3000;
 const app = express();
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    credentials: true,
-  })
-);
+const allowedOrigins = [
+  "https://wastara-frontend.vercel.app",
+  "http://localhost:5173",
+];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin) || /\.vercel\.app$/.test(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
+};
+app.use(cors(corsOptions));
+
 app.use(express.json());
+if (process.env.NODE_ENV === "production") app.set("trust proxy", 1);
 
 app.use(
   session({
@@ -35,22 +48,34 @@ app.use(
       collectionName: "sessions",
     }),
     cookie: {
-      sameSite: "lax",
-      secure: false,
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      secure: process.env.NODE_ENV === "production",
       httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24,
+      maxAge: 1000 * 60 * 60 * 24, // 24 hours
     },
+    // Add session name for debugging
+    name: "wastara.sid",
   })
 );
 
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use((req, res, next) => {
+  console.log("🔍 Middleware - Session ID:", req.sessionID);
+  console.log(
+    "🔍 Middleware - Has passport in session:",
+    !!req.session?.passport
+  );
+  next();
+});
+
 // Route handlers
 app.use("/api/signup", userRouter);
 app.use("/api/user-dashboard", userDashboardRouter);
 app.use("/api/cluster", clusterRoutes);
 app.use("/api/organizer-dashboard", organizerRouter);
+app.use("/api/auth/google", googleAuthRoutes);
 
 app.get("/auth/google", (req, res, next) => {
   const intent = req.query.intent;
@@ -116,10 +141,23 @@ app.get(
 );
 
 app.get("/api/me", (req, res) => {
-  if (req.isAuthenticated()) {
+  console.log("/api/me called");
+  console.log("Session ID:", req.sessionID);
+  console.log("Session:", req.session);
+  console.log("User:", req.user);
+  console.log("Is Authenticated:", req.isAuthenticated());
+
+  if (req.isAuthenticated() && req.user) {
     res.json(req.user);
   } else {
-    res.status(401).json({ message: "Not authenticated" });
+    res.status(401).json({
+      message: "Not authenticated",
+      debug: {
+        hasSession: !!req.session,
+        sessionID: req.sessionID,
+        isAuthenticated: req.isAuthenticated(),
+      },
+    });
   }
 });
 //=================
@@ -127,14 +165,11 @@ app.get("/api/me", (req, res) => {
 // Start the server AFTER middlewares & routes are set
 const startServer = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(process.env.MONGO_URI);
     console.log("✅ MongoDB connected");
 
-    app.listen(port, () => {
-      console.log(`🚀 Server running at http://localhost:${port}`);
+    app.listen(port, "0.0.0.0", () => {
+      console.log(`🚀 Server running on production port ${port}`);
     });
   } catch (err) {
     console.error("❌ MongoDB connection error:", err.message);

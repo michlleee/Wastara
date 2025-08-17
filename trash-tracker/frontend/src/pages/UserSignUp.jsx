@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 function UserSignUp() {
   const navigate = useNavigate();
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -22,12 +23,14 @@ function UserSignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const result = await axios.post("/api/signup/users", form);
+      const result = await axios.post(`${BACKEND_URL}/api/signup/users`, form, {
+        withCredentials: true,
+      });
       const data = result.data;
-      console.log(data.message);
+      //console.log(data.message);
       if (data.message === "Success") {
         setTimeout(() => {
-          navigate(`/dashboard/${data.user.id}`);
+          navigate(`/dashboard/user`);
         }, 0);
       }
     } catch (error) {
@@ -35,9 +38,36 @@ function UserSignUp() {
     }
   };
 
+  // const handleGoogleSignup = () => {
+  //   window.location.href = `${BACKEND_URL}/auth/google?intent=user`;
+  // };
+
+  const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+  // Use your deployed frontend callback path
+  // (must match the one you added in Google Cloud console)
+  const FRONTEND_CALLBACK = "https://wastara-frontend.vercel.app/auth/google/callback";
+
+  // Optional: carry intent so backend knows if it's user or organizer
+  const OAUTH_STATE = "user";
+
   const handleGoogleSignup = () => {
-    window.location.href = `http://localhost:3000/auth/google?intent=user`;
+    const params = new URLSearchParams({
+      client_id: GOOGLE_CLIENT_ID,
+      redirect_uri: FRONTEND_CALLBACK,
+      response_type: "code",
+      scope: "openid email profile",
+      include_granted_scopes: "true",
+      access_type: "offline", // optional: get refresh token
+      prompt: "consent",      // optional: force consent each time
+      state: OAUTH_STATE,
+    });
+
+    window.location.assign(
+      `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`
+    );
   };
+
   return (
     <>
       <div className="min-h-screen flex flex-col sm:flex-row">
@@ -67,7 +97,11 @@ function UserSignUp() {
               strokeWidth="2"
               viewBox="0 0 24 24"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
           </button>
         </div>

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 function OrganizerSignUp() {
   const navigate = useNavigate();
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -42,19 +43,23 @@ function OrganizerSignUp() {
         formData.append("ktpImage", form.ktpImage);
       }
 
-      const result = await axios.post("/api/signup/organizer", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        withCredentials: true,
-      });
+      const result = await axios.post(
+        `${BACKEND_URL}/api/signup/organizer`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true,
+        }
+      );
 
       const data = result.data;
       console.log(data.message);
 
       if (data.message === "Success") {
         setTimeout(() => {
-          navigate(`/dashboard/organizer/${data.user.id}`);
+          navigate(`/dashboard/organizer`);
         }, 0);
       }
     } catch (error) {
@@ -63,8 +68,29 @@ function OrganizerSignUp() {
     }
   };
 
+  // const handleGoogleSignup = () => {
+  //   window.location.href = `${BACKEND_URL}/auth/google?intent=organizer`;
+  // };
+  const FRONTEND_CALLBACK =
+    "https://wastara-frontend.vercel.app/auth/google/callback";
+  const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+  const OAUTH_STATE = "organizer";
+
   const handleGoogleSignup = () => {
-    window.location.href = `http://localhost:3000/auth/google?intent=organizer`;
+    const params = new URLSearchParams({
+      client_id: GOOGLE_CLIENT_ID,
+      redirect_uri: FRONTEND_CALLBACK,
+      response_type: "code",
+      scope: "openid email profile",
+      include_granted_scopes: "true",
+      access_type: "offline",
+      prompt: "consent",
+      state: OAUTH_STATE,
+    });
+
+    window.location.assign(
+      `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`
+    );
   };
 
   return (
@@ -77,8 +103,12 @@ function OrganizerSignUp() {
             className="object-cover w-full h-full absolute inset-0"
           />
           <div className="z-10 text-center p-6 sm:p-12">
-            <h2 className="text-3xl font-bold">Create your organizer account</h2>
-            <p className="mt-2">Be the force behind cleaner, greener communities.</p>
+            <h2 className="text-3xl font-bold">
+              Create your organizer account
+            </h2>
+            <p className="mt-2">
+              Be the force behind cleaner, greener communities.
+            </p>
           </div>
           <div className="absolute inset-0 bg-black opacity-70"></div>
         </div>
@@ -96,7 +126,11 @@ function OrganizerSignUp() {
               strokeWidth="2"
               viewBox="0 0 24 24"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
           </button>
         </div>

@@ -18,6 +18,7 @@ import LoadingScreen from "./components/LoadingScreen.jsx";
 import { Toaster } from "react-hot-toast";
 import axios from "axios";
 import ProtectedRoute from "./pages/ProtectedRoute.jsx";
+import GoogleCallback from "./pages/GoogleCallbacks.jsx";
 
 function LayoutWithLoader() {
   const location = useLocation();
@@ -38,14 +39,14 @@ function LayoutWithLoader() {
     </>
   );
 }
-
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 function App() {
   const [loadingUser, setLoadingUser] = useState(true);
   const [userData, setUserData] = useState(null);
 
   const fetchUser = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/me", {
+      const res = await axios.get(`${BACKEND_URL}/api/me`, {
         withCredentials: true,
       });
       setUserData(res.data);
@@ -72,9 +73,13 @@ function App() {
             element={<FinishOrganizerSignUp />}
           />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/dashboard/user" element={<UserDashboard />} />
+          <Route path="/dashboard/organizer" element={<OrganizerDashboard />} />
+          <Route path="/dashboard/user/report" element={<AddReport />} />
+          <Route path="/auth/google/callback" element={<GoogleCallback />} />
+        </Route>
 
-          {/* PLS PROTECT THESE ROUTES! TT */}
-          <Route
+        {/* <Route
             path="/dashboard/user"
             element={
               <ProtectedRoute
@@ -110,7 +115,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-        </Route>
+        </Route> */}
       </Routes>
     </BrowserRouter>
   );

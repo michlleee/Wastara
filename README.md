@@ -3,7 +3,7 @@
 
 # Wastara — Community-Powered Trash Reporting PWA
 
-A progressive web app (PWA) that allows citizens to report trash pileups and enables cleanup personnel to locate and address them. Designed to improve environmental responsiveness through community participation.
+A web application that allows citizens to report trash pileups and enables cleanup personnel to locate and address them. Designed to improve environmental responsiveness through community participation.
 
 ---
 
@@ -13,7 +13,6 @@ Wastara is a lightweight and mobile-first web app built for ease of reporting an
 
 - Citizens — who report trash in public areas
 - Organizers — designated trash pickup personnel (manual admin approval required)
-- Admins — who oversee and approve organizers and monitor cleanup efforts
 
 The app is targeted for communities such as those in Jakarta, Indonesia, where coordination and visibility are essential for efficient waste management.
 
@@ -25,37 +24,28 @@ Regular User
 
 - Register and log in
 - Report trash by location
-- View submission history
-- Cancel or edit pending reports
+- View total reports & completed pickups
+- Cancel pending reports
 
 Organizer (Pickup Worker)
 
 - Register with approval workflow
-- View assigned trash locations
+- Request & view assigned trash locations
 - Mark pickups as completed
-- Track personal pickup history
-
-Admin
-
-- Approve or reject organizer accounts
-- Monitor volume of trash reports
-- View daily statistics (basic version)
+- Cancel pickups
 
 ---
 
 ## Pages
 
-| Page                  | Description                                                                 |
-|------------------------|-----------------------------------------------------------------------------|
-| Landing Page           | App overview with call to action and login/register buttons                 |
-| Login Page             | Dual login (User and Organizer) with redirects                              |
-| Registration Page      | Registration for Users or Organizers with optional document upload          |
-| User Dashboard         | Report trash (auto-locate), view recent activity and statistics             |
-| My Reports Page        | Manage submitted reports (status, edit, cancel)                             |
-| Organizer Dashboard    | View nearby trash reports and mark as picked                               |
-| Admin Panel (Basic)    | Approve or reject organizers, view system-wide reports                      |
-| Pending Approval Page  | Displays pending status message for unapproved organizers                   |
-| Settings Page (Optional)| Profile editing, password change, logout                                   |
+
+Landing Page -> Modern landing page showcasing Wastara's features, vision & mission, and FAQs. Includes hero section, about us, problem statement, features overview and footer.
+User Registration -> Sign up form for regular users with email/password or Google OAuth. Collects basic user information.
+Organizer Registration -> Two-step registration for waste management organizers. Requires organization details, WhatsApp number and KTP document upload.
+Login Page -> Unified login page with role toggle between User/Organizer. Supports both traditional and Google OAuth authentication.
+User Dashboard-> Central hub for users to submit trash reports, view their reporting history, and track pickup status. Features report statistics and quick-action reporting button.
+Add Report Page -> Dedicated form for users to submit new trash reports with location detection, photo upload and description fields.
+Organizer Dashboard -> Command center for waste management teams to view assigned pickups, optimize routes using AI clustering, and manage cleanup operations within their service radius.
 
 ---
 
@@ -69,34 +59,21 @@ Frontend
 - PWA support via Workbox or Vite PWA plugin
 
 Backend
-
 - Node.js with Express
 - MongoDB with Mongoose
-- JWT for authentication
 - Bcrypt for password hashing
-- Multer for file uploads (optional)
+- CORS for cross-origin requests between frontend and backend
+
+Deployment
+- MongoDB Atlas for database
+- Vercel for frontend
+- Railway for backend
 
 Other Tools
-
 - Git + GitHub
 - Postman for API testing
 - Railway or Render for backend hosting
 - Vercel for frontend deployment
-
----
-
-## MVP Scope
-
-| Feature                          | Included |
-|----------------------------------|----------|
-| User and Organizer registration  | Yes      |
-| Organizer approval system        | Yes      |
-| Trash reporting with location    | Yes      |
-| Organizer dashboard              | Yes      |
-| Admin interface (basic)          | Yes      |
-| Map clustering / Heatmaps        | Yes       |
-| WhatsApp/Notification integration| No       |
-| Settings page                    | Optional |
 
 ---
 
