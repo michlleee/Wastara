@@ -1,7 +1,7 @@
 # AIC-CicakBelajar
 ---
 
-# Wastara — Community-Powered Trash Reporting PWA
+# Wastara — Community-Powered Trash Reporting Web Application
 
 A web application that allows citizens to report trash pileups and enables cleanup personnel to locate and address them. Designed to improve environmental responsiveness through community participation.
 
@@ -39,13 +39,20 @@ Organizer (Pickup Worker)
 ## Pages
 
 
-Landing Page -> Modern landing page showcasing Wastara's features, vision & mission, and FAQs. Includes hero section, about us, problem statement, features overview and footer.
-User Registration -> Sign up form for regular users with email/password or Google OAuth. Collects basic user information.
-Organizer Registration -> Two-step registration for waste management organizers. Requires organization details, WhatsApp number and KTP document upload.
-Login Page -> Unified login page with role toggle between User/Organizer. Supports both traditional and Google OAuth authentication.
-User Dashboard-> Central hub for users to submit trash reports, view their reporting history, and track pickup status. Features report statistics and quick-action reporting button.
-Add Report Page -> Dedicated form for users to submit new trash reports with location detection, photo upload and description fields.
-Organizer Dashboard -> Command center for waste management teams to view assigned pickups, optimize routes using AI clustering, and manage cleanup operations within their service radius.
+- Landing Page:
+Modern landing page showcasing Wastara's features, vision & mission, and FAQs. Includes hero section, about us, problem statement, features overview and footer.
+- User Registration:
+Sign up form for regular users with email/password or Google OAuth. Collects basic user information.
+- Organizer Registration:
+Two-step registration for waste management organizers. Requires organization details, WhatsApp number and KTP document upload.
+- Login Page:
+Unified login page with role toggle between User/Organizer. Supports both traditional and Google OAuth authentication.
+- User Dashboard:
+Central hub for users to submit trash reports, view their reporting history, and track pickup status. Features report statistics and quick-action reporting button.
+- Add Report Page:
+Dedicated form for users to submit new trash reports with location detection, photo upload and description fields.
+- Organizer Dashboard:
+Command center for waste management teams to view assigned pickups, optimize routes using AI clustering, and manage cleanup operations within their service radius.
 
 ---
 
