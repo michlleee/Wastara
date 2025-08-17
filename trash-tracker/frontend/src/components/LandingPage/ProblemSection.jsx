@@ -23,10 +23,7 @@ const ProblemSection = () => {
       <div className="relative flex flex-col sm:flex-row sm:justify-center sm:items-start gap-16 sm:gap-24 overflow-hidden py-8 sm:py-16">
 
         {/* desktop lines */}
-        <div className="hidden sm:block absolute top-2/5 -translate-y-2.5 left-0 w-full h-[2px] bg-[#6D9D58] z-0" />
-
-        {/* mobile lines */}
-        <div className="sm:hidden absolute left-1/4 -translate-x-1.5 top-0 h-full w-[2px] bg-[#6D9D58] z-0" />
+        <div className="hidden sm:block absolute top-2/5 md:-translate-y-7 lg:-translate-y-2 left-0 w-full h-[2px] bg-[#6D9D58] z-0" />
 
         {problemData.map((item, index) => (
           <div
@@ -34,7 +31,6 @@ const ProblemSection = () => {
             className="relative z-10 flex items-center sm:flex-col sm:items-center gap-x-6 sm:gap-6 w-full sm:w-auto px-4 sm:px-0"
           >
             <div className="relative flex items-center justify-center min-w-[85px] min-h-[85px] sm:min-w-[128px] sm:min-h-[128px] ml-2">
-              {/* Decorative rings */}
               <div className="absolute w-full h-full rounded-full bg-[#6D9D58] opacity-20"
                   style={{ animation: 'pulseInner 3s ease-in-out infinite' }}></div>
               <div className="absolute w-full h-full rounded-full bg-[#6D9D58] opacity-10"
