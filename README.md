@@ -112,21 +112,6 @@ Create a .env file inside the /server directory with the following content:
 ```
 ---
 
-## Folder Structure
-```
-    /client
-      /src
-        /pages
-        /components
-        /contexts
-        /services
-
-    /server
-      /routes
-      /models
-      /middleware
-      server.js
-```
 ---
 
 ## Future Improvements
