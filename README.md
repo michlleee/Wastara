@@ -63,7 +63,6 @@ Frontend
 - React (with Vite or Create React App)
 - React Router
 - Tailwind CSS
-- PWA support via Workbox or Vite PWA plugin
 
 Backend
 - Node.js with Express
@@ -79,7 +78,7 @@ Deployment
 Other Tools
 - Git + GitHub
 - Postman for API testing
-- Railway or Render for backend hosting
+- Railway for backend hosting
 - Vercel for frontend deployment
 
 ---
