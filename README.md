@@ -7,14 +7,20 @@ Access the website here! --> https://wastara-frontend.vercel.app/
 ---
 
 ## Screenshots
-Landing Page
-<img width="1911" height="906" alt="image" src="https://github.com/user-attachments/assets/be9045cd-b3dc-478f-8498-cb0a87b3358b" />
 
-User Dashboard
-<img width="1911" height="904" alt="image" src="https://github.com/user-attachments/assets/88630113-3ef1-4196-9d36-387d683073da" />
+<details>
+<summary>Click to expand</summary>
 
-Organizer Dashboard
-<img width="1901" height="902" alt="image" src="https://github.com/user-attachments/assets/484230f5-707d-482f-80bd-5cdfd015f63e" />
+**Landing Page**  
+<img width="1911" height="906" alt="Landing Page" src="https://github.com/user-attachments/assets/be9045cd-b3dc-478f-8498-cb0a87b3358b" />
+
+**User Dashboard**  
+<img width="1911" height="904" alt="User Dashboard" src="https://github.com/user-attachments/assets/88630113-3ef1-4196-9d36-387d683073da" />
+
+**Organizer Dashboard**  
+<img width="1901" height="902" alt="Organizer Dashboard" src="https://github.com/user-attachments/assets/484230f5-707d-482f-80bd-5cdfd015f63e" />
+
+</details>
 
 ## Overview
 
@@ -45,8 +51,39 @@ Organizer (Pickup Worker)
 
 ---
 
-## Pages
+## AI-Powered Report Prioritization and Route Optimization
 
+Wastara includes a Python-based backend module that helps organizers focus on the most important trash reports by ranking and filtering them intelligently. This ensures faster response times and more efficient routing.
+
+### How It Works
+
+- **Urgency Scoring**  
+  Each report is scored based on:
+  - **Time**: Older reports are more urgent, using a log-scale scoring model.
+  - **Text**: Description is analyzed using a combination of:
+    - Keyword detection (e.g., *bau*, *beracun*)
+    - Large Language Model via the Groq API (LLaMA 3.1)
+  - **Distance**: Reports closer to the organizer are prioritized.
+
+  > If the Groq API is unavailable, the system uses keyword scoring as a fallback.
+
+- **Smart Filtering**  
+  Only reports within a given working radius (default: 5 km) are considered. The system then selects the top K most urgent reports (default: 10).
+
+- **Optimized Routing**  
+  The selected reports are reordered to minimize travel distance using:
+  - A **Nearest Neighbor** heuristic
+  - A **2-Opt algorithm** for further route refinement
+
+- **System Output Includes**:
+  - Optimized report order for pickup
+  - Estimated total distance (in km)
+  - Google Maps link for the route
+  - Summary stats (e.g., how many reports were excluded or selected)
+
+---
+
+## Pages
 
 - Landing Page:
 Modern landing page showcasing Wastara's features, vision & mission, and FAQs. Includes hero section, about us, problem statement, features overview and footer.
