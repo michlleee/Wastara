@@ -55,7 +55,7 @@ Organizer (Pickup Worker)
 
 ---
 
-## AI-Powered Report Prioritization and Route Optimization
+## AI Routing Logic
 
 Wastara includes a Python-based backend module that helps organizers focus on the most important trash reports by ranking and filtering them intelligently. This ensures faster response times and more efficient routing.
 
