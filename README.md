@@ -6,7 +6,7 @@ Access the website here! --> https://wastara-frontend.vercel.app/
 
 ---
 
-# Screenshots
+## Screenshots
 Landing Page
 <img width="1911" height="906" alt="image" src="https://github.com/user-attachments/assets/be9045cd-b3dc-478f-8498-cb0a87b3358b" />
 
