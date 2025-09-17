@@ -1,6 +1,3 @@
-# AIC-CicakBelajar
----
-
 # Wastara — Community-Powered Trash Reporting Web Application
 
 A web application that allows citizens to report trash pileups and enables cleanup personnel to locate and address them. Designed to improve environmental responsiveness through community participation.
