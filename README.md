@@ -9,7 +9,9 @@ Access the website here! --> https://wastara-frontend.vercel.app/
 ## Screenshots
 
 <details>
+  
 <summary>Click to expand</summary>
+
 
 **Landing Page**  
 <img width="1911" height="906" alt="Landing Page" src="https://github.com/user-attachments/assets/be9045cd-b3dc-478f-8498-cb0a87b3358b" />
@@ -21,6 +23,8 @@ Access the website here! --> https://wastara-frontend.vercel.app/
 <img width="1901" height="902" alt="Organizer Dashboard" src="https://github.com/user-attachments/assets/484230f5-707d-482f-80bd-5cdfd015f63e" />
 
 </details>
+
+---
 
 ## Overview
 
