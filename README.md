@@ -2,7 +2,19 @@
 
 A web application that allows citizens to report trash pileups and enables cleanup personnel to locate and address them. Designed to improve environmental responsiveness through community participation.
 
+Access the website here! --> https://wastara-frontend.vercel.app/
+
 ---
+
+# Screenshots
+Landing Page
+<img width="1911" height="906" alt="image" src="https://github.com/user-attachments/assets/be9045cd-b3dc-478f-8498-cb0a87b3358b" />
+
+User Dashboard
+<img width="1911" height="904" alt="image" src="https://github.com/user-attachments/assets/88630113-3ef1-4196-9d36-387d683073da" />
+
+Organizer Dashboard
+<img width="1901" height="902" alt="image" src="https://github.com/user-attachments/assets/484230f5-707d-482f-80bd-5cdfd015f63e" />
 
 ## Overview
 
